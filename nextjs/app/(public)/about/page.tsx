@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <section>
+      <section className='min-h-svh w-full p-6 md:p-10'>
         <h1>About Page</h1>
       </section>
     </>

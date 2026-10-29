@@ -1,3 +1,6 @@
+import { FileUp, QrCode, Sparkle } from 'lucide-react';
+import Chip from '../ui/chip';
+
 const HowItWorks = () => {
   return (
     <section
@@ -6,9 +9,10 @@ const HowItWorks = () => {
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='text-center max-w-3xl mx-auto mb-16 space-y-4'>
-          <span className='text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20'>
+          <Chip className='bg-amber-500/10 border-amber-500/20'>
             Ultra Simple Setup
-          </span>
+          </Chip>
+
           <h2 className='text-3xl sm:text-4xl font-extrabold text-white'>
             From Paper to Digital in 3 Steps
           </h2>
@@ -30,7 +34,7 @@ const HowItWorks = () => {
             </p>
             <div className='mt-auto pt-4 flex items-center text-xs font-semibold text-amber-400 gap-1'>
               <span>Supports PDF, JPG, PNG & CSV</span>
-              <i data-lucide='file-up' className='w-4 h-4'></i>
+              <FileUp className='size-4' />
             </div>
           </div>
 
@@ -47,7 +51,7 @@ const HowItWorks = () => {
             </p>
             <div className='mt-auto pt-4 flex items-center text-xs font-semibold text-amber-400 gap-1'>
               <span>Auto allergen tagging</span>
-              <i data-lucide='sparkles' className='w-4 h-4'></i>
+              <Sparkle className='size-4' />
             </div>
           </div>
 
@@ -64,7 +68,7 @@ const HowItWorks = () => {
             </p>
             <div className='mt-auto pt-4 flex items-center text-xs font-semibold text-amber-400 gap-1'>
               <span>Ready-to-print vectors</span>
-              <i data-lucide='qr-code' className='w-4 h-4'></i>
+              <QrCode className='size-4' />
             </div>
           </div>
         </div>

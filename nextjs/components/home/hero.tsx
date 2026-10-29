@@ -8,6 +8,7 @@ import {
   Zap,
 } from 'lucide-react';
 import Image from 'next/image';
+import Chip from '../ui/chip';
 
 const Hero = () => {
   return (
@@ -18,10 +19,10 @@ const Hero = () => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
         <div className='grid lg:grid-cols-12 gap-12 lg:gap-8 items-center'>
           <div className='lg:col-span-7 text-center lg:text-left space-y-6'>
-            <div className='inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel-light text-amber-400 text-xs font-semibold tracking-wide border border-amber-500/30'>
+            <Chip>
               <span className='w-2 h-2 rounded-full bg-amber-400 animate-pulse'></span>
               AI-POWERED MENU MANAGEMENT PLATFORM
-            </div>
+            </Chip>
 
             <h1 className='text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]'>
               Your Menu, Everywhere. <br className='hidden sm:inline' />

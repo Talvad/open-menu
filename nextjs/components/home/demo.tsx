@@ -1,11 +1,19 @@
+import {
+  CloudLightning,
+  FileSpreadsheet,
+  PlusCircle,
+  UploadCloud,
+} from 'lucide-react';
+import Chip from '../ui/chip';
+
 const Demo = () => {
   return (
     <section id='demo' className='py-20 relative'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='text-center max-w-3xl mx-auto mb-12 space-y-3'>
-          <span className='text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20'>
+          <Chip className='bg-amber-500/10 border-amber-500/20'>
             Try It Live
-          </span>
+          </Chip>
           <h2 className='text-3xl sm:text-4xl font-extrabold text-white'>
             Experience the Merchant Upload Dashboard
           </h2>
@@ -21,21 +29,23 @@ const Demo = () => {
               id='tab-file'
               className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 bg-amber-500 text-navy-900 shadow'
             >
-              <i data-lucide='upload-cloud' className='w-4 h-4'></i>
+              <UploadCloud className='size-4' />
+
               <span>Upload Photo / PDF</span>
             </button>
             <button
               id='tab-manual'
               className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white'
             >
-              <i data-lucide='plus-circle' className='w-4 h-4'></i>
+              <PlusCircle className='size-4' />
+
               <span>Add Item Manually</span>
             </button>
             <button
               id='tab-csv'
               className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white'
             >
-              <i data-lucide='file-spreadsheet' className='w-4 h-4'></i>
+              <FileSpreadsheet className='size-4' />
               <span>CSV Bulk Import</span>
             </button>
           </div>
@@ -46,7 +56,7 @@ const Demo = () => {
               className='border-2 border-dashed border-slate-700 hover:border-amber-500 rounded-2xl p-8 sm:p-12 text-center bg-slate-900/40 transition-colors cursor-pointer group'
             >
               <div className='w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 mx-auto flex items-center justify-center mb-4 group-hover:scale-110 transition-transform'>
-                <i data-lucide='cloud-lightning' className='w-8 h-8'></i>
+                <CloudLightning className='size-8' />
               </div>
               <h4 className='text-lg font-bold text-white mb-1'>
                 Drag and drop your menu PDF or image

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <section className='min-h-svh w-full p-6 md:p-10'>
+      <section className='min-h-svh w-full p-6 md:p-10 bg-red-100'>
         <h1>Home Page</h1>
       </section>
     </>

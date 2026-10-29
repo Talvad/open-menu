@@ -1,3 +1,9 @@
+import Demo from '@/components/home/demo';
+import Features from '@/components/home/features';
+import Hero from '@/components/home/hero';
+import HowItWorks from '@/components/home/how-it-works';
+import Pricing from '@/components/home/pricing';
+import Subscribe from '@/components/home/subscribe';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,9 +12,12 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <section className='min-h-svh w-full p-6 md:p-10 bg-red-100'>
-        <h1>Home Page</h1>
-      </section>
+      <Hero />
+      <HowItWorks />
+      <Demo />
+      <Features />
+      <Pricing />
+      <Subscribe />
     </>
   );
 }

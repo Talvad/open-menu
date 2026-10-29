@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <section className='min-h-svh w-full p-6 md:p-10 bg-red-100'>
+      <section className='min-h-svh w-full relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden'>
         <h1>About Page</h1>
       </section>
     </>

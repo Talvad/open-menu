@@ -1,4 +1,6 @@
+import { Eye, Leaf, QrCode, TrendingUp, Utensils, Zap } from 'lucide-react';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -10,30 +12,31 @@ export default function DashboardPage() {
         <div className='glass-card p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Total Menu Views</span>
-            <i data-lucide='eye' className='w-4 h-4 text-amber-400'></i>
+            <Eye className='size-4 text-amber-400' />
           </div>
           <div className='text-2xl font-extrabold text-white'>4,820</div>
           <span className='text-[10px] text-amber-400 font-semibold flex items-center gap-1 mt-1'>
-            <i data-lucide='trending-up' className='w-3 h-3'></i> +14.2% this
-            week
+            <TrendingUp className='size-3' />
+            +14.2% this week
           </span>
         </div>
 
         <div className='glass-card p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Table QR Scans</span>
-            <i data-lucide='qr-code' className='w-4 h-4 text-amber-400'></i>
+            <QrCode className='size-4 text-amber-400' />
           </div>
           <div className='text-2xl font-extrabold text-white'>1,249</div>
           <span className='text-[10px] text-amber-400 font-semibold flex items-center gap-1 mt-1'>
-            <i data-lucide='trending-up' className='w-3 h-3'></i> +8.1% today
+            <TrendingUp className='size-3' />
+            +8.1% today
           </span>
         </div>
 
         <div className='glass-card p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Active Menu Items</span>
-            <i data-lucide='utensils' className='w-4 h-4 text-amber-400'></i>
+            <Utensils className='size-4 text-amber-400' />
           </div>
           <div
             className='text-2xl font-extrabold text-white'
@@ -41,7 +44,7 @@ export default function DashboardPage() {
           >
             4
           </div>
-          <span className='text-[10px] text-slate-400 font-semibold block mt-1'>
+          <span className='text-[10px] text-amber-400 font-semibold block mt-1'>
             Across 3 categories
           </span>
         </div>
@@ -49,7 +52,7 @@ export default function DashboardPage() {
         <div className='glass-card p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Est. Saved Paper</span>
-            <i data-lucide='leaf' className='w-4 h-4 text-amber-400'></i>
+            <Leaf className='size-4 text-amber-400' />
           </div>
           <div className='text-2xl font-extrabold text-white'>$450</div>
           <span className='text-[10px] text-amber-400 font-semibold block mt-1'>
@@ -61,7 +64,7 @@ export default function DashboardPage() {
       <div className='glass-card p-6 rounded-3xl border border-amber-500/30 bg-linear-to-r from-amber-950/40 via-navy-900 to-navy-900 flex flex-col sm:flex-row items-center justify-between gap-4'>
         <div className='space-y-1 text-center sm:text-left'>
           <h3 className='text-base font-bold text-white flex items-center gap-2 justify-center sm:justify-start'>
-            <i data-lucide='zap' className='w-4 h-4 text-amber-400'></i>
+            <Zap className='size-4 text-amber-400' />
             Instant Menu Updates
           </h3>
           <p className='text-xs text-slate-300'>
@@ -69,9 +72,11 @@ export default function DashboardPage() {
             immediately.
           </p>
         </div>
-        <button className='px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-900 font-bold text-xs whitespace-nowrap shadow-lg'>
-          Open Menu Builder →
-        </button>
+        <Link href={'/dashboard/menu-builder'}>
+          <button className='px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-900 font-bold text-xs whitespace-nowrap shadow-lg cursor-pointer'>
+            Open Menu Builder →
+          </button>
+        </Link>
       </div>
 
       <div className='glass-card p-6 rounded-3xl border border-slate-800 space-y-4'>

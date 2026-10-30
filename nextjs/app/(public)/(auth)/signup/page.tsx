@@ -1,0 +1,13 @@
+import Signup from '@/components/signup';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Signup',
+};
+export default function SignupPage() {
+  return (
+    <>
+      <Signup />
+    </>
+  );
+}

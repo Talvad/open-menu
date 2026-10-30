@@ -9,7 +9,7 @@ export default function DashboardPage() {
   return (
     <div className='space-y-6'>
       <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
-        <div className='glass-card p-4 rounded-2xl border border-slate-800'>
+        <div className='backdrop-blur-lg bg-gray-900 p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Total Menu Views</span>
             <Eye className='size-4 text-amber-400' />
@@ -21,7 +21,7 @@ export default function DashboardPage() {
           </span>
         </div>
 
-        <div className='glass-card p-4 rounded-2xl border border-slate-800'>
+        <div className='backdrop-blur-lg bg-gray-900 p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Table QR Scans</span>
             <QrCode className='size-4 text-amber-400' />
@@ -33,7 +33,7 @@ export default function DashboardPage() {
           </span>
         </div>
 
-        <div className='glass-card p-4 rounded-2xl border border-slate-800'>
+        <div className='backdrop-blur-lg bg-gray-900 p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Active Menu Items</span>
             <Utensils className='size-4 text-amber-400' />
@@ -49,7 +49,7 @@ export default function DashboardPage() {
           </span>
         </div>
 
-        <div className='glass-card p-4 rounded-2xl border border-slate-800'>
+        <div className='backdrop-blur-lg bg-gray-900 p-4 rounded-2xl border border-slate-800'>
           <div className='flex items-center justify-between text-slate-400 mb-2'>
             <span className='text-[11px] font-semibold'>Est. Saved Paper</span>
             <Leaf className='size-4 text-amber-400' />
@@ -61,7 +61,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className='glass-card p-6 rounded-3xl border border-amber-500/30 bg-linear-to-r from-amber-950/40 via-navy-900 to-navy-900 flex flex-col sm:flex-row items-center justify-between gap-4'>
+      <div className='backdrop-blur-lg bg-gray-900 p-6 rounded-3xl border border-amber-500/30 bg-linear-to-r from-amber-950/40 via-navy-900 to-navy-900 flex flex-col sm:flex-row items-center justify-between gap-4'>
         <div className='space-y-1 text-center sm:text-left'>
           <h3 className='text-base font-bold text-white flex items-center gap-2 justify-center sm:justify-start'>
             <Zap className='size-4 text-amber-400' />
@@ -79,7 +79,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <div className='glass-card p-6 rounded-3xl border border-slate-800 space-y-4'>
+      <div className='backdrop-blur-lg bg-gray-900 p-6 rounded-3xl border border-slate-800 space-y-4'>
         <div className='flex items-center justify-between'>
           <h3 className='text-sm font-bold text-white'>
             Most Viewed Items Today
@@ -87,7 +87,7 @@ export default function DashboardPage() {
           <span className='text-xs text-slate-400'>Live Analytics</span>
         </div>
         <div className='space-y-3'>
-          <div className='flex items-center justify-between p-3 rounded-xl bg-navy-950/80 border border-slate-800'>
+          <div className='flex items-center justify-between p-3 rounded-xl bg-black/30 border border-slate-800'>
             <div className='flex items-center gap-3'>
               <span className='w-6 text-center text-xs font-extrabold text-amber-400'>
                 #1
@@ -103,7 +103,7 @@ export default function DashboardPage() {
             </div>
             <span className='text-xs font-bold text-amber-400'>$18.50</span>
           </div>
-          <div className='flex items-center justify-between p-3 rounded-xl bg-navy-950/80 border border-slate-800'>
+          <div className='flex items-center justify-between p-3 rounded-xl bg-black/30 border border-slate-800'>
             <div className='flex items-center gap-3'>
               <span className='w-6 text-center text-xs font-extrabold text-slate-400'>
                 #2

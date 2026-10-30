@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { SideNavbar } from './_components/side-navbar';
+import { AddItemForm } from './_components/add-item-form';
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
@@ -105,22 +106,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             </div>
           </div>
 
-          <div className='flex items-center gap-3'>
-            <a
-              href='index.html'
-              target='_blank'
-              className='hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-xs font-semibold text-amber-400 border border-amber-500/30 hover:border-amber-500'
-            >
-              <ExternalLink className='size-3.5' />
-
-              <span>Live Menu View</span>
-            </a>
-            <button className='px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-900 font-bold text-xs shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition-all'>
-              <Plus className='size-4' />
-
-              <span>Add Item</span>
-            </button>
-          </div>
+          <AddItemForm />
         </header>
 
         {/* <!-- Scrollable Content View Grid --> */}

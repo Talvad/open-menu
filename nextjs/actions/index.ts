@@ -7,12 +7,14 @@ export type SignupFormState = {
   success: boolean;
   errors?: {
     name?: string[];
+    shopName?: string[];
     email?: string[];
     password?: string[];
     confirmPassword?: string[];
   };
   inputs?: {
     name?: string;
+    shopName?: string;
     email?: string;
   };
   message?: string;
@@ -24,6 +26,7 @@ export async function signupAction(
 ): Promise<SignupFormState> {
   // Convert FormData to a standard object
   const name = String(formData.get('name') ?? '');
+  const shopName = String(formData.get('shopName') ?? '');
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
@@ -31,6 +34,7 @@ export async function signupAction(
   // Validate the data against our Zod schema
   const validatedFields = signupSchema.safeParse({
     name,
+    shopName,
     email,
     password,
     confirmPassword,
@@ -44,6 +48,7 @@ export async function signupAction(
       message: 'Please fix the errors below.',
       inputs: {
         name,
+        shopName,
         email,
       },
     };
@@ -61,6 +66,7 @@ export async function signupAction(
       message: 'Database error. Failed to register user.',
       inputs: {
         name,
+        shopName,
         email,
       },
     };

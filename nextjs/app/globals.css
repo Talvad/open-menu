@@ -139,6 +139,7 @@
   html {
     @apply font-jakarta-sans;
   }
+
   .glass-panel {
     background: rgba(30, 41, 59, 0.7);
     backdrop-filter: blur(12px);

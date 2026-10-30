@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
+import { SideNavbar } from './_components/side-navbar';
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
@@ -57,58 +58,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           </div>
 
           {/* <!-- Nav Links --> */}
-          <nav className='p-4 space-y-1.5 text-xs font-semibold'>
-            <Link
-              href={'/dashboard'}
-              className='w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-amber-500 text-navy-900 font-bold shadow-md transition-all'
-            >
-              <LayoutDashboard className='size-4' />
-
-              <span>Overview</span>
-            </Link>
-
-            <Link
-              href={'/dashboard/menu-builder'}
-              className='w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all'
-            >
-              <Utensils className='size-4' />
-
-              <span>Menu Builder</span>
-              <span
-                id='builder-count-badge'
-                className='ml-auto bg-slate-800 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-full'
-              >
-                4
-              </span>
-            </Link>
-
-            <Link
-              href={'/dashboard/categories'}
-              className='w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all'
-            >
-              <FolderTree className='size-4' />
-
-              <span>Categories</span>
-            </Link>
-
-            <Link
-              href={'/dashboard/qr-code-generator'}
-              className='w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all'
-            >
-              <QrCode className='size-4' />
-
-              <span>QR Code Generator</span>
-            </Link>
-
-            <Link
-              href={'/dashboard/settings'}
-              className='w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all'
-            >
-              <Settings className='size-4' />
-
-              <span>Settings</span>
-            </Link>
-          </nav>
+          <SideNavbar />
         </div>
 
         {/* <!-- Footer User Profile --> */}

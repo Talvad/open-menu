@@ -37,10 +37,10 @@ function FromError({ state }: FormErrorType) {
   if (!state.message) return null;
   return (
     <div
-      className={`rounded-lg border ${state.success ? 'border-green-500 bg-green-400' : 'border-red-500 bg-red-400'}`}
+      className={`rounded-lg border ${state.success ? 'border-green-500 bg-green-400/10' : 'border-red-500 bg-red-400/10'}`}
     >
       <p
-        className={` py-2 text-center text-sm font-bold ${state.success ? 'text-green-900' : 'text-red-900'}`}
+        className={` py-2 text-center text-sm font-light ${state.success ? 'text-green-500' : 'text-red-500'} `}
       >
         {state.message}
       </p>

@@ -12,7 +12,7 @@ import Chip from '../ui/chip';
 
 const Hero = () => {
   return (
-    <section className='relative pt-12 overflow-hidden'>
+    <section className='relative py-12 overflow-hidden'>
       <div className='absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-amber-500/10 rounded-full blur-[140px] pointer-events-none'></div>
       <div className='absolute top-1/3 right-10 w-100 h-100 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none'></div>
 

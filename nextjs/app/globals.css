@@ -45,11 +45,12 @@
   --color-navy-800: #111827;
   --color-navy-700: #1e293b;
   --color-navy-600: #334155;
-  --color-amber-400: #fbbf24;
+
+  /* --color-amber-400: #fbbf24;
   --color-amber-500: #f59e0b;
   --color-amber-600: #d97706;
   --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
+  --color-emerald-500: #10b981; */
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);

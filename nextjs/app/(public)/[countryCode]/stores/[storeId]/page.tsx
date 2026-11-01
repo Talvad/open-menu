@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 export default function StorePage() {
   return (
     <>
-      <section className='min-h-svh w-full relative pt-20 pb-20 overflow-hidden'>
-        <div className='max-w-xl mx-auto relative min-h-screen border-x border-slate-800/80 bg-navy-950 shadow-2xl'>
+      <section className='min-h-svh w-full relative overflow-hidden'>
+        <div className='max-w-4xl mx-auto relative min-h-screen border-x border-slate-800/80 bg-navy-950 shadow-2xl'>
           {/* <!-- 1. HERO & RESTAURANT BRANDING --> */}
           <header className='relative'>
             <div className='h-56 w-full relative overflow-hidden'>

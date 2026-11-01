@@ -5,7 +5,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main className='min-h-svh w-full relative py-20 overflow-hidden'>
+        {children}
+      </main>
       <Footer />
     </>
   );

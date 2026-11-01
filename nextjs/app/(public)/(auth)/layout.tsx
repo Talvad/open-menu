@@ -3,7 +3,7 @@ import { Sparkles, Zap, RefreshCcw, Percent, QrCode } from 'lucide-react';
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <>
-      <section className='relative z-10 my-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden max-w-7xl mx-auto w-full'>
+      <section className='relative z-10 my-auto px-4 sm:px-6 lg:px-8 pt-12 overflow-hidden max-w-7xl mx-auto w-full'>
         <div className='grid lg:grid-cols-12 gap-8 items-start'>
           <div className='lg:col-span-7 xl:col-span-6 space-y-6'>
             <div className='space-y-2 text-left'>

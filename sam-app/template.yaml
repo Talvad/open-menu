@@ -4,7 +4,7 @@ Description: >
   Open Menu
 
   Open menu backend project created with aws-sam with nodejs typescript
-  
+
 Parameters:
   Stage:
     Type: String
@@ -48,7 +48,7 @@ Globals:
       - x86_64
 
 Resources:
-# ---------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------
   # DynamoDB - single table
   #   Shop      PK=SHOP#<id>   SK=META              (GSI1PK=STATUS#<status>)
   #   Group     PK=SHOP#<id>   SK=GROUP#<id>
@@ -81,7 +81,6 @@ Resources:
         PointInTimeRecoveryEnabled: !If [IsProd, true, false]
       DeletionProtectionEnabled: !If [IsProd, true, false]
 
-
     # ---------------------------------------------------------------------------
   # Cognito
   # ---------------------------------------------------------------------------
@@ -103,7 +102,12 @@ Resources:
           RequireNumbers: true
           RequireSymbols: false
       Schema:
-        - { Name: email, AttributeDataType: String, Required: true, Mutable: true }
+        - {
+            Name: email,
+            AttributeDataType: String,
+            Required: true,
+            Mutable: true,
+          }
       # Pre token generation V2 (access-token scopes) is only available on the Essentials / Plus feature plans.
       UserPoolTier: ESSENTIALS
       LambdaConfig:
@@ -155,7 +159,7 @@ Resources:
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
-    DependsOn: GoogleProvider # the provider must exist before the client can list it (ignored when HasGoogle is false)
+    # DependsOn: GoogleProvider # the provider must exist before the client can list it (ignored when HasGoogle is false)
     Properties:
       ClientName: !Sub open-menu-web-${Stage}
       UserPoolId: !Ref UserPool
@@ -163,7 +167,8 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows: [code]
       AllowedOAuthScopes: [openid, email, profile]
-      SupportedIdentityProviders: !If [HasGoogle, [COGNITO, Google], [COGNITO]]
+      SupportedIdentityProviders:
+        !If [HasGoogle, [COGNITO, !Ref GoogleProvider], [COGNITO]]
       CallbackURLs: !Ref CallbackUrls
       LogoutURLs: !Ref LogoutUrls
       ExplicitAuthFlows: [ALLOW_REFRESH_TOKEN_AUTH]
@@ -261,7 +266,7 @@ Resources:
   #   Properties:
   #     CodeUri: src/
   #     Handler: app.lambdaHandler
-      
+
   #     Events:
   #       HelloWorld:
   #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -274,7 +279,7 @@ Resources:
   #       Minify: true
   #       Target: "es2022"
   #       Sourcemap: true
-  #       EntryPoints: 
+  #       EntryPoints:
   #       - app.ts
 
   # ---------------------------------------------------------------------------
@@ -422,23 +427,246 @@ Resources:
         # Every private route names its Authorizer AND the scope the access token must carry.
         # Rule: /admin/* -> openmenu/admin, other GET -> openmenu/shop.read, POST/PUT/DELETE -> openmenu/shop.write
         # (mirrored in backend/src/lib/auth.ts requiredScope). Keep both in sync when adding routes.
-        Me: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
-        CreateShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /shops, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        GetShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/shops/{shopId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
-        UpdateShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        SubmitShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/submit', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        GetMenu: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/shops/{shopId}/menu', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
-        CreateGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/groups', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        UpdateGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}/groups/{groupId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        DeleteGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: DELETE, Path: '/shops/{shopId}/groups/{groupId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        CreateItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/items', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        UpdateItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}/items/{itemId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        DeleteItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: DELETE, Path: '/shops/{shopId}/items/{itemId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        UploadUrl: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/upload-url', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
-        AdminListShops: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/shops, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
-        AdminSetStatus: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/admin/shops/{shopId}/status', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
-        AdminAudit: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/admin/shops/{shopId}/audit', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
-
+        Me:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: /me,
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.read],
+                  },
+              },
+          }
+        CreateShop:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: /shops,
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        GetShop:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: '/shops/{shopId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.read],
+                  },
+              },
+          }
+        UpdateShop:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: PUT,
+                Path: '/shops/{shopId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        SubmitShop:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/submit',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        GetMenu:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: '/shops/{shopId}/menu',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.read],
+                  },
+              },
+          }
+        CreateGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/groups',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UpdateGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: PUT,
+                Path: '/shops/{shopId}/groups/{groupId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        DeleteGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: DELETE,
+                Path: '/shops/{shopId}/groups/{groupId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        CreateItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/items',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UpdateItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: PUT,
+                Path: '/shops/{shopId}/items/{itemId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        DeleteItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: DELETE,
+                Path: '/shops/{shopId}/items/{itemId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UploadUrl:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/upload-url',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        AdminListShops:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: /admin/shops,
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
+                  },
+              },
+          }
+        AdminSetStatus:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/admin/shops/{shopId}/status',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
+                  },
+              },
+          }
+        AdminAudit:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: '/admin/shops/{shopId}/audit',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
+                  },
+              },
+          }
 
 Outputs:
   ApiUrl:

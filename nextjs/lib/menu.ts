@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from 'next/cache'
-import type { PublicMenu } from '@open-menu/shared'
+import type { PublicMenu } from './types'
 
 /**
  * Public menu for /[slug]. This is the hot path, so it is cached ('use cache', Cache Components):

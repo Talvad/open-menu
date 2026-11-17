@@ -3,7 +3,7 @@
 // Used by both the owner dashboard and the admin "edit as owner" screen.
 // Authorization is NOT decided here: the API checks the token against shop ownership / admin role.
 
-import type { UploadTicket } from '@open-menu/shared'
+import type { UploadTicket } from '@/lib/types'
 import { api } from '@/lib/api'
 import { requireSession } from '@/lib/auth/session'
 import type { ActionState } from './types'

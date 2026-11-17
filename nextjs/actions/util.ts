@@ -1,6 +1,6 @@
 import 'server-only'
 import { refresh, updateTag } from 'next/cache'
-import type { Shop } from '@open-menu/shared'
+import type { Shop } from '@/lib/types'
 import { api, ApiError } from '@/lib/api'
 import type { ActionState } from './types'
 

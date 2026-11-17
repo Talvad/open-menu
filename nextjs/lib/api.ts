@@ -1,5 +1,5 @@
 import 'server-only'
-import type { AuditEntry, Me, Shop, ShopMenu } from '@open-menu/shared'
+import type { AuditEntry, Me, Shop, ShopMenu } from './types'
 import { requireSession } from './auth/session'
 import { env } from './env'
 

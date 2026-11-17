@@ -3,7 +3,7 @@ import { cache } from 'react'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { CognitoJwtVerifier } from 'aws-jwt-verify'
-import { SCOPES } from '@open-menu/shared'
+import { SCOPES } from '../constants'
 import { env } from '../env'
 import { COOKIE } from './cookies'
 

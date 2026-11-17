@@ -48,6 +48,39 @@ Globals:
       - x86_64
 
 Resources:
+# ---------------------------------------------------------------------------
+  # DynamoDB - single table
+  #   Shop      PK=SHOP#<id>   SK=META              (GSI1PK=STATUS#<status>)
+  #   Group     PK=SHOP#<id>   SK=GROUP#<id>
+  #   Item      PK=SHOP#<id>   SK=ITEM#<id>
+  #   Audit     PK=SHOP#<id>   SK=AUDIT#<iso>#<rnd>
+  #   Slug      PK=SLUG#<slug> SK=META              (uniqueness lock -> shopId)
+  #   OwnerShop PK=OWNER#<sub> SK=SHOP              (one shop per owner -> shopId)
+  #   Owner     PK=OWNER#<sub> SK=PROFILE
+  # ---------------------------------------------------------------------------
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: PK, AttributeType: S }
+        - { AttributeName: SK, AttributeType: S }
+        - { AttributeName: GSI1PK, AttributeType: S }
+        - { AttributeName: GSI1SK, AttributeType: S }
+      KeySchema:
+        - { AttributeName: PK, KeyType: HASH }
+        - { AttributeName: SK, KeyType: RANGE }
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - { AttributeName: GSI1PK, KeyType: HASH }
+            - { AttributeName: GSI1SK, KeyType: RANGE }
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: !If [IsProd, true, false]
+      DeletionProtectionEnabled: !If [IsProd, true, false]
+
 
     # ---------------------------------------------------------------------------
   # Cognito
@@ -244,7 +277,173 @@ Resources:
   #       EntryPoints: 
   #       - app.ts
 
+  # ---------------------------------------------------------------------------
+  # Media: private S3 bucket served through CloudFront (Origin Access Control)
+  # ---------------------------------------------------------------------------
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [POST, PUT]
+            AllowedOrigins: !Ref WebOrigins
+            AllowedHeaders: ['*']
+            MaxAge: 3000
+
+  MediaOac:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub open-menu-${Stage}-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  MediaDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: media
+            DomainName: !GetAtt MediaBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt MediaOac.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: media
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          AllowedMethods: [GET, HEAD]
+          # Managed policy: CachingOptimized. Object keys are unique (uuid) so long caching is safe.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+
+  MediaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MediaBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub ${MediaBucket.Arn}/*
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${MediaDistribution}
+
+  # ---------------------------------------------------------------------------
+  # HTTP API + JWT authorizer (Cognito ID token)
+  # ---------------------------------------------------------------------------
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 50
+        ThrottlingRateLimit: 25
+      Auth:
+        DefaultAuthorizer: CognitoJwt
+        Authorizers:
+          # Validates the Cognito ACCESS token: signature, expiry, issuer, client (its client_id claim must match the
+          # audience below) and, per route, the required scope. ID tokens have no scope claim, so they are rejected.
+          CognitoJwt:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}
+              audience:
+                - !Ref UserPoolClient
+
+  # Public, unauthenticated menu read
+  PublicFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Target: es2022
+        Sourcemap: true
+        EntryPoints: [src/handlers/public.ts]
+    Properties:
+      CodeUri: .
+      Handler: public.handler
+      Environment:
+        Variables:
+          MEDIA_BASE_URL: !Sub https://${MediaDistribution.DomainName}
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+      Events:
+        PublicMenu:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /public/shops/{slug}
+            Auth:
+              Authorizer: NONE
+
+  # Everything behind the JWT authorizer. One function with an internal router keyed by routeKey.
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Target: es2022
+        Sourcemap: true
+        EntryPoints: [src/handlers/api.ts]
+    Properties:
+      CodeUri: .
+      Handler: api.handler
+      Timeout: 15
+      Environment:
+        Variables:
+          MEDIA_BASE_URL: !Sub https://${MediaDistribution.DomainName}
+          MEDIA_BUCKET: !Ref MediaBucket
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action: s3:PutObject
+              Resource: !Sub ${MediaBucket.Arn}/shops/*
+      Events:
+        # Every private route names its Authorizer AND the scope the access token must carry.
+        # Rule: /admin/* -> openmenu/admin, other GET -> openmenu/shop.read, POST/PUT/DELETE -> openmenu/shop.write
+        # (mirrored in backend/src/lib/auth.ts requiredScope). Keep both in sync when adding routes.
+        Me: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
+        CreateShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /shops, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        GetShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/shops/{shopId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
+        UpdateShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        SubmitShop: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/submit', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        GetMenu: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/shops/{shopId}/menu', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.read] } } }
+        CreateGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/groups', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        UpdateGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}/groups/{groupId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        DeleteGroup: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: DELETE, Path: '/shops/{shopId}/groups/{groupId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        CreateItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/items', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        UpdateItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: '/shops/{shopId}/items/{itemId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        DeleteItem: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: DELETE, Path: '/shops/{shopId}/items/{itemId}', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        UploadUrl: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/shops/{shopId}/upload-url', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/shop.write] } } }
+        AdminListShops: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/shops, Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
+        AdminSetStatus: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: POST, Path: '/admin/shops/{shopId}/status', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
+        AdminAudit: { Type: HttpApi, Properties: { ApiId: !Ref HttpApi, Method: GET, Path: '/admin/shops/{shopId}/audit', Auth: { Authorizer: CognitoJwt, AuthorizationScopes: [openmenu/admin] } } }
+
+
 Outputs:
+  ApiUrl:
+    Description: Put this in web/.env.local as API_URL
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
   CognitoDomain:
     Description: Put this in web/.env.local as COGNITO_DOMAIN
     Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com
@@ -254,6 +453,12 @@ Outputs:
   UserPoolClientId:
     Description: nextjs/.env.local COGNITO_CLIENT_ID
     Value: !Ref UserPoolClient
+  MediaUrl:
+    Description: web/.env.local MEDIA_URL
+    Value: !Sub https://${MediaDistribution.DomainName}
+  TableName:
+    Description: DynamoDB table (used by the seed script)
+    Value: !Ref Table
   GoogleRedirectUri:
     Description: Add this as an Authorized redirect URI on your Google OAuth client
     Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com/oauth2/idpresponse

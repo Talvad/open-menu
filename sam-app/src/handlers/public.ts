@@ -1,6 +1,6 @@
 import type { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { GetCommand } from '@aws-sdk/lib-dynamodb'
-import { slugSchema, type PublicMenu } from '@open-menu/shared'
+import { slugSchema, type PublicMenu } from '../lib/schemas'
 import { ddb, keys, listByPrefix, TABLE, type Rec } from '../lib/db'
 import { errorResponse, json } from '../lib/http'
 import { bySort, toGroup, toItem } from '../lib/mappers'

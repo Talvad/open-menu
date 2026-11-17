@@ -1,4 +1,4 @@
-import { SCOPES } from '@open-menu/shared'
+import { SCOPES } from '../lib/constants'
 
 /**
  * Cognito "Pre token generation" trigger, event version V2_0 (needs the Essentials or Plus feature plan).

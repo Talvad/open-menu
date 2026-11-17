@@ -1,4 +1,4 @@
-import type { AuditEntry, MenuGroup, MenuItem, Shop } from '@open-menu/shared'
+import type { AuditEntry, MenuGroup, MenuItem, Shop } from './types'
 import type { Rec } from './db'
 
 const MEDIA = process.env.MEDIA_BASE_URL ?? ''

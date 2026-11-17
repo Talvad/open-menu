@@ -1,5 +1,5 @@
 import { GetCommand } from '@aws-sdk/lib-dynamodb'
-import { SCOPES } from '@open-menu/shared'
+import { SCOPES } from './constants'
 import { ddb, keys, TABLE, type Rec } from './db'
 import { HttpError, type ApiEvent } from './http'
 

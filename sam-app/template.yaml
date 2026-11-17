@@ -5,42 +5,255 @@ Description: >
 
   Open menu backend project created with aws-sam with nodejs typescript
   
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, prod]
+  CognitoDomainPrefix:
+    Type: String
+    Description: Globally unique prefix for the Cognito Hosted UI domain
+  CallbackUrls:
+    Type: CommaDelimitedList
+    Default: http://localhost:3000/auth/callback
+    Description: Allowed OAuth redirect URIs (your Next.js /auth/callback routes)
+  LogoutUrls:
+    Type: CommaDelimitedList
+    Default: http://localhost:3000
+    Description: Allowed sign-out redirect URIs (no trailing slash)
+  WebOrigins:
+    Type: CommaDelimitedList
+    Default: http://localhost:3000
+    Description: Origins allowed to upload images to S3 from the browser (CORS)
+  GoogleClientId:
+    Type: String
+    Default: ''
+    Description: Google OAuth client ID. Leave empty to disable "Continue with Google".
+  GoogleClientSecret:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Google OAuth client secret (keep it out of git, see README)
+
+Conditions:
+  IsProd: !Equals [!Ref Stage, prod]
+  HasGoogle: !Not [!Equals [!Ref GoogleClientId, '']]
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 10
+    Runtime: nodejs24.x
+    Architectures:
+      - x86_64
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+    # ---------------------------------------------------------------------------
+  # Cognito
+  # ---------------------------------------------------------------------------
+  UserPool:
+    Type: AWS::Cognito::UserPool
     Properties:
-      CodeUri: src/
-      Handler: app.lambdaHandler
-      Runtime: nodejs24.x
-      Architectures:
-        - x86_64
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: get
-    Metadata: # Manage esbuild properties
+      UserPoolName: !Sub open-menu-${Stage}
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      DeletionProtection: !If [IsProd, ACTIVE, INACTIVE]
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - { Name: verified_email, Priority: 1 }
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - { Name: email, AttributeDataType: String, Required: true, Mutable: true }
+      # Pre token generation V2 (access-token scopes) is only available on the Essentials / Plus feature plans.
+      UserPoolTier: ESSENTIALS
+      LambdaConfig:
+        PreSignUp: !GetAtt PreSignUpFunction.Arn
+        PostConfirmation: !GetAtt PostConfirmationFunction.Arn
+        PreTokenGenerationConfig:
+          LambdaArn: !GetAtt PreTokenFunction.Arn
+          LambdaVersion: V2_0
+
+  OwnerGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: owner
+      Description: Shop owners
+      UserPoolId: !Ref UserPool
+
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: admin
+      Description: Platform administrators (add users manually)
+      UserPoolId: !Ref UserPool
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomainPrefix
+      UserPoolId: !Ref UserPool
+
+  # Google as an identity provider (only created when GoogleClientId is set).
+  # In Google Cloud Console add this Authorized redirect URI to the OAuth client:
+  #   https://<CognitoDomainPrefix>.auth.<region>.amazoncognito.com/oauth2/idpresponse   (see the GoogleRedirectUri output)
+  GoogleProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Condition: HasGoogle
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: 'openid email profile'
+      AttributeMapping:
+        email: email
+        email_verified: email_verified
+        name: name
+        username: sub
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: GoogleProvider # the provider must exist before the client can list it (ignored when HasGoogle is false)
+    Properties:
+      ClientName: !Sub open-menu-web-${Stage}
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false # Authorization Code + PKCE; Next.js route handlers do the exchange
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows: [code]
+      AllowedOAuthScopes: [openid, email, profile]
+      SupportedIdentityProviders: !If [HasGoogle, [COGNITO, Google], [COGNITO]]
+      CallbackURLs: !Ref CallbackUrls
+      LogoutURLs: !Ref LogoutUrls
+      ExplicitAuthFlows: [ALLOW_REFRESH_TOKEN_AUTH]
+      PreventUserExistenceErrors: ENABLED
+      IdTokenValidity: 60
+      AccessTokenValidity: 60
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        IdToken: minutes
+        AccessToken: minutes
+        RefreshToken: days
+
+  PostConfirmationFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
-        Minify: true
-        Target: "es2020"
+        Target: es2022
         Sourcemap: true
-        EntryPoints: 
-        - app.ts
+        EntryPoints: [src/handlers/post-confirmation.ts]
+    Properties:
+      CodeUri: .
+      Handler: post-confirmation.handler
+      Policies:
+        - Statement:
+            # Wildcard pool ARN avoids a circular dependency (pool -> function -> pool).
+            - Effect: Allow
+              Action: cognito-idp:AdminAddUserToGroup
+              Resource: !Sub arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*
+            - Effect: Allow
+              Action: dynamodb:PutItem
+              Resource: !GetAtt Table.Arn
+
+  PostConfirmationPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PostConfirmationFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  # Links a first-time Google sign-in to an existing email/password account with the same verified email,
+  # so owners never end up with two separate accounts (and "lose" their shop).
+  PreSignUpFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Target: es2022
+        Sourcemap: true
+        EntryPoints: [src/handlers/pre-signup.ts]
+    Properties:
+      CodeUri: .
+      Handler: pre-signup.handler
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - cognito-idp:ListUsers
+                - cognito-idp:AdminLinkProviderForUser
+              Resource: !Sub arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*
+
+  PreSignUpPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PreSignUpFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  # Turns Cognito group membership into OAuth scopes on the ACCESS token (owner / admin). No AWS calls, no IAM needed.
+  PreTokenFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Target: es2022
+        Sourcemap: true
+        EntryPoints: [src/handlers/pre-token.ts]
+    Properties:
+      CodeUri: .
+      Handler: pre-token.handler
+      Timeout: 5 # runs inside the sign-in flow: keep it fast (Cognito allows at most 5 s)
+
+  PreTokenPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PreTokenFunction
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  # HelloWorldFunction:
+  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  #   Properties:
+  #     CodeUri: src/
+  #     Handler: app.lambdaHandler
+      
+  #     Events:
+  #       HelloWorld:
+  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+  #         Properties:
+  #           Path: /hello
+  #           Method: get
+  #   Metadata: # Manage esbuild properties
+  #     BuildMethod: esbuild
+  #     BuildProperties:
+  #       Minify: true
+  #       Target: "es2022"
+  #       Sourcemap: true
+  #       EntryPoints: 
+  #       - app.ts
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  CognitoDomain:
+    Description: Put this in web/.env.local as COGNITO_DOMAIN
+    Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com
+  UserPoolId:
+    Description: nextjs/.env.local COGNITO_USER_POOL_ID
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Description: nextjs/.env.local COGNITO_CLIENT_ID
+    Value: !Ref UserPoolClient
+  GoogleRedirectUri:
+    Description: Add this as an Authorized redirect URI on your Google OAuth client
+    Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com/oauth2/idpresponse

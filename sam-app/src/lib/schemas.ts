@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 import {
   CURRENCIES,
   IMAGE_TYPES,
@@ -6,9 +6,9 @@ import {
   RESERVED_SLUGS,
   SHOP_STATUSES,
   SHOP_TYPES,
-} from './constants'
+} from './constants';
 
-const text = (max: number) => z.string().trim().max(max)
+const text = (max: number) => z.string().trim().max(max);
 
 /* ------------------------------------------------------------------ */
 /* Shop                                                                */
@@ -18,8 +18,11 @@ export const slugSchema = z
   .string()
   .min(3, 'At least 3 characters')
   .max(40, 'At most 40 characters')
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase letters, numbers and single hyphens')
-  .refine((s) => !RESERVED_SLUGS.includes(s), 'That address is reserved')
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    'Use lowercase letters, numbers and single hyphens',
+  )
+  .refine((s) => !RESERVED_SLUGS.includes(s), 'That address is reserved');
 
 const shopFields = {
   name: z.string().trim().min(2, 'At least 2 characters').max(80),
@@ -33,19 +36,22 @@ const shopFields = {
   whatsapp: z
     .string()
     .trim()
-    .regex(/^(\d{8,15})?$/, 'Digits only, with country code (e.g. 919876543210)')
+    .regex(
+      /^(\d{8,15})?$/,
+      'Digits only, with country code (e.g. 919876543210)',
+    )
     .optional(),
   address: text(200).optional(),
   currency: z.enum(CURRENCIES),
-}
+};
 
-export const shopCreateSchema = z.object({ ...shopFields, slug: slugSchema })
-export const shopUpdateSchema = z.object(shopFields).partial()
+export const shopCreateSchema = z.object({ ...shopFields, slug: slugSchema });
+export const shopUpdateSchema = z.object(shopFields).partial();
 
 export const statusSchema = z.object({
   status: z.enum(SHOP_STATUSES),
   reason: text(300).optional(),
-})
+});
 
 /* ------------------------------------------------------------------ */
 /* Groups                                                              */
@@ -55,28 +61,33 @@ export const groupCreateSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(60),
   sortOrder: z.number().int().min(0).max(100000).default(0),
   visible: z.boolean().default(true),
-})
+});
 
 export const groupUpdateSchema = z.object({
   name: z.string().trim().min(1).max(60).optional(),
   sortOrder: z.number().int().min(0).max(100000).optional(),
   visible: z.boolean().optional(),
-})
+});
 
 /* ------------------------------------------------------------------ */
 /* Items                                                               */
 /* ------------------------------------------------------------------ */
 
-const tagsSchema = z.array(z.string().trim().min(1).max(24)).max(LIMITS.maxTagsPerItem)
+const tagsSchema = z
+  .array(z.string().trim().min(1).max(24))
+  .max(LIMITS.maxTagsPerItem);
 
 const attributesSchema = z
   .record(z.string().max(40), z.string().max(120))
   .refine(
     (r) => Object.keys(r).length <= LIMITS.maxAttributesPerItem,
     `At most ${LIMITS.maxAttributesPerItem} extra details`,
-  )
+  );
 
-const priceSchema = z.number().min(0, 'Price cannot be negative').max(10_000_000)
+const priceSchema = z
+  .number()
+  .min(0, 'Price cannot be negative')
+  .max(10_000_000);
 
 export const itemCreateSchema = z.object({
   groupId: z.string().min(1).max(64),
@@ -89,7 +100,7 @@ export const itemCreateSchema = z.object({
   sortOrder: z.number().int().min(0).max(100000).default(0),
   tags: tagsSchema.default([]),
   attributes: attributesSchema.default({}),
-})
+});
 
 /** Separate from itemCreateSchema on purpose: an update must never re-apply defaults. */
 export const itemUpdateSchema = z.object({
@@ -103,24 +114,29 @@ export const itemUpdateSchema = z.object({
   sortOrder: z.number().int().min(0).max(100000).optional(),
   tags: tagsSchema.optional(),
   attributes: attributesSchema.optional(),
-})
+});
 
 /* ------------------------------------------------------------------ */
 /* Uploads                                                             */
 /* ------------------------------------------------------------------ */
 
 export const uploadSchema = z.object({
-  contentType: z.enum(Object.keys(IMAGE_TYPES) as [keyof typeof IMAGE_TYPES, ...(keyof typeof IMAGE_TYPES)[]]),
-})
+  contentType: z.enum(
+    Object.keys(IMAGE_TYPES) as [
+      keyof typeof IMAGE_TYPES,
+      ...(keyof typeof IMAGE_TYPES)[],
+    ],
+  ),
+});
 
 /* ------------------------------------------------------------------ */
 /* Inferred input types                                                */
 /* ------------------------------------------------------------------ */
 
-export type ShopCreateInput = z.infer<typeof shopCreateSchema>
-export type ShopUpdateInput = z.infer<typeof shopUpdateSchema>
-export type StatusInput = z.infer<typeof statusSchema>
-export type GroupCreateInput = z.infer<typeof groupCreateSchema>
-export type GroupUpdateInput = z.infer<typeof groupUpdateSchema>
-export type ItemCreateInput = z.infer<typeof itemCreateSchema>
-export type ItemUpdateInput = z.infer<typeof itemUpdateSchema>
+export type ShopCreateInput = z.infer<typeof shopCreateSchema>;
+export type ShopUpdateInput = z.infer<typeof shopUpdateSchema>;
+export type StatusInput = z.infer<typeof statusSchema>;
+export type GroupCreateInput = z.infer<typeof groupCreateSchema>;
+export type GroupUpdateInput = z.infer<typeof groupUpdateSchema>;
+export type ItemCreateInput = z.infer<typeof itemCreateSchema>;
+export type ItemUpdateInput = z.infer<typeof itemUpdateSchema>;

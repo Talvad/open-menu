@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Open Menu
@@ -27,17 +27,17 @@ Parameters:
     Description: Origins allowed to upload images to S3 from the browser (CORS)
   GoogleClientId:
     Type: String
-    Default: ''
+    Default: ""
     Description: Google OAuth client ID. Leave empty to disable "Continue with Google".
   GoogleClientSecret:
     Type: String
-    Default: ''
+    Default: ""
     NoEcho: true
     Description: Google OAuth client secret (keep it out of git, see README)
 
 Conditions:
   IsProd: !Equals [!Ref Stage, prod]
-  HasGoogle: !Not [!Equals [!Ref GoogleClientId, '']]
+  HasGoogle: !Not [!Equals [!Ref GoogleClientId, ""]]
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -150,7 +150,7 @@ Resources:
       ProviderDetails:
         client_id: !Ref GoogleClientId
         client_secret: !Ref GoogleClientSecret
-        authorize_scopes: 'openid email profile'
+        authorize_scopes: "openid email profile"
       AttributeMapping:
         email: email
         email_verified: email_verified
@@ -187,7 +187,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Target: es2022
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints: [src/handlers/post-confirmation.ts]
     Properties:
       CodeUri: .
@@ -249,7 +249,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Target: es2022
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints: [src/handlers/pre-token.ts]
     Properties:
       CodeUri: .
@@ -292,12 +292,15 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Target: es2022
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints: [src/handlers/api.ts]
     Properties:
       CodeUri: .
       Handler: api.handler
       Timeout: 15
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
       Events:
         Me:
           {

@@ -1,24 +1,22 @@
-import { api } from '@/lib/api';
 import Link from 'next/link';
 import Button from './ui/button';
+import { getSession } from '@/lib/auth/session';
 
-type Props = {
-  loggedIn: boolean;
-};
-export async function AppNavbar({ loggedIn }: Props) {
-  const me = await api('/me');
-  console.log('ME', me);
+export async function AppNavbar() {
+  const session = await getSession();
   return (
     <nav className='flex items-center gap-5 text-sm ml-auto'>
-      <Link
-        href={'/signin'}
-        className='px-1 py-3 font-medium text-foreground transition-opacity hover:opacity-80'
-      >
-        Sign in
-      </Link>
-      <Link href={loggedIn ? '/dashboard' : '/auth/login'}>
+      {!session && (
+        <Link
+          href={'/auth/login'}
+          className='px-1 py-3 font-medium text-foreground transition-opacity hover:opacity-80'
+        >
+          Sign in
+        </Link>
+      )}
+      <Link href={'/dashboard'}>
         <Button className='font-semibold'>
-          {loggedIn ? 'Dashboard' : 'Create your shop'}
+          {session ? 'Dashboard' : 'Create your shop'}
         </Button>
       </Link>
     </nav>
@@ -26,5 +24,9 @@ export async function AppNavbar({ loggedIn }: Props) {
 }
 
 export function AppNavbarSkeleton() {
-  return <nav>Loading</nav>;
+  return (
+    <nav>
+      <Button className='font-semibold'>Loading...</Button>
+    </nav>
+  );
 }

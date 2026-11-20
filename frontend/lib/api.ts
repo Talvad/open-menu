@@ -30,12 +30,11 @@ export async function api<T>(
       ...(hasBody ? { 'content-type': 'application/json' } : {}),
     },
     body: hasBody ? JSON.stringify(init.body) : undefined,
-    // cache: 'no-store',
+    cache: 'no-store',
   });
   const data = (await res.json().catch(() => null)) as {
     message?: string;
   } | null;
-  console.log('data', data);
   if (!res.ok)
     throw new ApiError(
       res.status,

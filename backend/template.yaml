@@ -301,6 +301,9 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         Me:
           {

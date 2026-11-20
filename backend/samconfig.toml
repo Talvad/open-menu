@@ -18,7 +18,6 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
 s3_prefix = "openmenu-backend"
-region = "ap-south-1"
 parameter_overrides = "Stage=\"dev\" CognitoDomainPrefix=\"openmenu\" CallbackUrls=\"http://localhost:3000/auth/callback\" LogoutUrls=\"http://localhost:3000\" WebOrigins=\"http://localhost:3000\" GoogleClientId=\"843390105680-3sj2909lj6v5n2irvehm8rd3gj2ar9t3.apps.googleusercontent.com\""
 image_repositories = []
 

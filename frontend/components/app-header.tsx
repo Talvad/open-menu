@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Button from './ui/button';
 import { ReactNode, Suspense } from 'react';
 import { AppNavbar, AppNavbarSkeleton } from './app-navbar';
+import AppNavLinks from './app-navlinks';
 
 type Props = {
   logo?: string;
@@ -23,7 +23,7 @@ export default function AppHeader({
   children = null,
 }: Props) {
   return (
-    <header className='px-5 sm:px-10 py-2 sm:py-4 border-b border-b-gray-300 flex items-center justify-between flex-wrap gap-2'>
+    <header className='px-5 sm:px-10 py-2 sm:py-4 border-b border-b-gray-300 flex items-center justify-between flex-wrap gap-x-10 gap-y-2'>
       <Link href={homeLink}>
         {logo ? (
           <div className='inline-flex items-center gap-2.5'>
@@ -34,8 +34,9 @@ export default function AppHeader({
           <h2>{title}</h2>
         )}
       </Link>
+      {links.length > 0 && <AppNavLinks links={links} />}
       <Suspense fallback={<AppNavbarSkeleton />}>
-        <AppNavbar loggedIn={loggedIn} />
+        <AppNavbar />
       </Suspense>
     </header>
   );

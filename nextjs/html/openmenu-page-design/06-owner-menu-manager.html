@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Owner: menu manager</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+</style>
+
+</head>
+<body>
+
+<div style="min-height: 2000px; background: #FAF8F5; color: #1C1917; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #E7E5E4">
+<div style="max-width: 896px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px">
+<a href="#" style="display: inline-flex; align-items: center; gap: 8px">
+<svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><defs><clipPath id="m1"><rect x="32" width="32" height="64"/></clipPath></defs><rect width="64" height="64" rx="15" fill="#D97706"/><path d="M18 47V18L32 34L46 18V47" fill="none" stroke="#FFF3DC" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 47V18L32 34L46 18V47" fill="none" stroke="#F6C77A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#m1)"/></svg>
+<span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: #1C1917">Open <span style="color: #B45309">Menu</span></span>
+</a>
+<span style="background: #F5F5F4; color: #44403C; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px">Owner</span>
+<nav style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 14px">
+<a href="#" style="color: #44403C; padding: 12px 0; border-bottom: 2px solid transparent">Overview</a>
+<a href="#" style="color: #1C1917; font-weight: 600; padding: 12px 0; border-bottom: 2px solid #B45309">Menu</a>
+<a href="#" style="color: #44403C; padding: 12px 0; border-bottom: 2px solid transparent">Shop details</a>
+</nav>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 14px; color: #57534E">
+<span>owner@example.com</span>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Sign out</button>
+</div>
+</div>
+</header>
+
+<main style="max-width: 896px; margin: 0 auto; padding: 40px 16px 64px; display: flex; flex-direction: column; gap: 20px">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 34px; font-weight: 700; letter-spacing: -0.02em">Menu</h1>
+
+<!-- Add a group (collapsed) -->
+<div style="background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 15px; font-weight: 600">+ Add a group</span>
+<span style="font-size: 13px; color: #57534E">Open to add</span>
+</div>
+
+<!-- GROUP: Breakfast -->
+<section style="background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Breakfast</h2>
+<span style="font-size: 13px; color: #57534E">3 items</span>
+<button type="button" style="margin-left: auto; border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Edit group</button>
+</div>
+
+<ul style="list-style: none; margin: 12px 0 0; padding: 0">
+
+<!-- item 1 -->
+<li style="padding: 14px 0; border-top: 1px solid #F5F5F4">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 10px; background: #FDE7C2; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg></div>
+<div style="min-width: 0; flex: 1">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">Veg Sandwich</span><span style="font-size: 14px; color: #44403C">₹80.00</span></div>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">Grilled, with mint chutney</p>
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Mark sold out</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Hide</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #B91C1C; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Delete</button>
+<a href="#" style="font-size: 13px; font-weight: 600; color: #B45309; padding: 7px 4px">Edit</a>
+</div>
+</div>
+</div>
+</li>
+
+<!-- item 2 (edit form open) -->
+<li style="padding: 14px 0; border-top: 1px solid #F5F5F4">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 10px; background: #FDE7C2; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg></div>
+<div style="min-width: 0; flex: 1">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">Masala Dosa</span><span style="font-size: 14px; color: #44403C">₹95.00</span></div>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">Crisp dosa with potato masala, sambar and chutney</p>
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Mark sold out</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Hide</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #B91C1C; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Delete</button>
+<span style="font-size: 13px; font-weight: 600; color: #1C1917; padding: 7px 4px">Edit ▾</span>
+</div>
+
+<form style="margin-top: 14px; background: #FAFAF9; border: 1px solid #E7E5E4; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; gap: 14px">
+<div style="flex: 3 1 240px">
+<label for="in" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Item name</label>
+<input id="in" type="text" value="Masala Dosa" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+<div style="flex: 1 1 140px">
+<label for="ip" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Price</label>
+<input id="ip" type="number" value="95" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+</div>
+<div>
+<label for="id" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Description</label>
+<textarea id="id" rows="2" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">Crisp dosa with potato masala, sambar and chutney</textarea>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 14px">
+<div style="flex: 3 1 240px">
+<label for="ig" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Group</label>
+<select id="ig" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF"><option>Breakfast</option><option>Drinks</option></select>
+</div>
+<div style="flex: 1 1 140px">
+<label for="io" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Order</label>
+<input id="io" type="number" value="2" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+</div>
+<div>
+<label for="it" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Tags (comma separated)</label>
+<input id="it" type="text" value="veg, popular" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+<div>
+<label for="ia" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Extra details (one per line, “Name: value”)</label>
+<textarea id="ia" rows="2" placeholder="Weight: 1 kg" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF"></textarea>
+</div>
+<div>
+<span style="display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Photo</span>
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 64px; height: 64px; border-radius: 10px; background: #FDE7C2; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg></div>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 500; font-family: inherit">Change</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Remove</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px">
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" checked>Available (in stock)</label>
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" checked>Show on the public menu</label>
+</div>
+<div><button type="submit" style="border: 0; background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; font-family: inherit">Save item</button></div>
+</form>
+</div>
+</div>
+</li>
+
+<!-- item 3 (sold out) -->
+<li style="padding: 14px 0; border-top: 1px solid #F5F5F4">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 10px; background: #F5F5F4"></div>
+<div style="min-width: 0; flex: 1">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">Egg Omelette</span><span style="font-size: 14px; color: #44403C">₹60.00</span><span style="background: #FEE2E2; color: #991B1B; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px">Sold out</span></div>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">Two eggs, onion, chilli</p>
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Mark available</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Hide</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #B91C1C; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Delete</button>
+<a href="#" style="font-size: 13px; font-weight: 600; color: #B45309; padding: 7px 4px">Edit</a>
+</div>
+</div>
+</div>
+</li>
+</ul>
+
+<div style="margin-top: 8px"><button type="button" style="border: 0; background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600; font-family: inherit">+ Add item to Breakfast</button></div>
+</section>
+
+<!-- GROUP: Drinks (group editor open) -->
+<section style="background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Drinks</h2>
+<span style="font-size: 13px; color: #57534E">2 items</span>
+<span style="margin-left: auto; font-size: 13px; font-weight: 600; color: #1C1917; padding: 7px 4px">Edit group ▾</span>
+</div>
+
+<div style="margin-top: 12px; background: #FAFAF9; border: 1px solid #E7E5E4; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; gap: 14px">
+<div style="flex: 3 1 240px">
+<label for="gn" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Group name</label>
+<input id="gn" type="text" value="Drinks" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+<div style="flex: 1 1 140px">
+<label for="go" style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #57534E">Order</label>
+<input id="go" type="number" value="2" style="width: 100%; box-sizing: border-box; border: 1px solid #D6D3D1; border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: #1C1917; background: #FFFFFF">
+</div>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 14px"><input type="checkbox" checked>Show this group on the public menu</label>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" style="border: 0; background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; font-family: inherit">Save group</button>
+<button type="button" style="border: 1px solid #FCA5A5; background: #FFFFFF; color: #B91C1C; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 500; font-family: inherit">Delete group and its items</button>
+</div>
+</div>
+
+<ul style="list-style: none; margin: 12px 0 0; padding: 0">
+<li style="padding: 14px 0; border-top: 1px solid #F5F5F4">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 10px; background: #F5F5F4"></div>
+<div style="min-width: 0; flex: 1">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">Filter Coffee</span><span style="font-size: 14px; color: #44403C">₹30.00</span></div>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">South Indian style</p>
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Mark sold out</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Hide</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #B91C1C; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Delete</button>
+<a href="#" style="font-size: 13px; font-weight: 600; color: #B45309; padding: 7px 4px">Edit</a>
+</div>
+</div>
+</div>
+</li>
+<li style="padding: 14px 0; border-top: 1px solid #F5F5F4">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 10px; background: #F5F5F4"></div>
+<div style="min-width: 0; flex: 1">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">Fresh Lime Soda</span><span style="font-size: 14px; color: #44403C">₹45.00</span><span style="background: #E7E5E4; color: #44403C; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px">Hidden</span></div>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">Sweet or salted</p>
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Mark sold out</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Show</button>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #B91C1C; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Delete</button>
+<a href="#" style="font-size: 13px; font-weight: 600; color: #B45309; padding: 7px 4px">Edit</a>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<div style="margin-top: 8px"><button type="button" style="border: 0; background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600; font-family: inherit">+ Add item to Drinks</button></div>
+</section>
+
+<!-- GROUP: Specials (hidden, empty) -->
+<section style="background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Weekend specials</h2>
+<span style="background: #E7E5E4; color: #44403C; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px">Hidden</span>
+<span style="font-size: 13px; color: #57534E">0 items</span>
+<button type="button" style="margin-left: auto; border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Edit group</button>
+</div>
+<p style="margin: 12px 0 0; font-size: 14px; color: #57534E">Customers do not see groups that are hidden or empty.</p>
+<div style="margin-top: 12px"><button type="button" style="border: 0; background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600; font-family: inherit">+ Add item to Weekend specials</button></div>
+</section>
+
+</main>
+</div>
+
+</body>
+</html>

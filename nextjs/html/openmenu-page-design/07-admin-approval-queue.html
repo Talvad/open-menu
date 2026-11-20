@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin: approval queue</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+</style>
+
+</head>
+<body>
+
+<div style="min-height: 820px; background: #FAF8F5; color: #1C1917; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #E7E5E4">
+<div style="max-width: 896px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px">
+<a href="#" style="display: inline-flex; align-items: center; gap: 8px">
+<svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><defs><clipPath id="q1"><rect x="32" width="32" height="64"/></clipPath></defs><rect width="64" height="64" rx="15" fill="#D97706"/><path d="M18 47V18L32 34L46 18V47" fill="none" stroke="#FFF3DC" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 47V18L32 34L46 18V47" fill="none" stroke="#F6C77A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#q1)"/></svg>
+<span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: #1C1917">Open <span style="color: #B45309">Menu</span></span>
+</a>
+<span style="background: #1C1917; color: #FFF3DC; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px">Admin</span>
+<nav style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 14px">
+<a href="#" style="color: #1C1917; font-weight: 600; padding: 12px 0; border-bottom: 2px solid #B45309">Approval queue</a>
+<a href="#" style="color: #44403C; padding: 12px 0; border-bottom: 2px solid transparent">All shops</a>
+</nav>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 14px; color: #57534E">
+<span>admin@example.com</span>
+<button type="button" style="border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 500; font-family: inherit">Sign out</button>
+</div>
+</div>
+</header>
+
+<main style="max-width: 896px; margin: 0 auto; padding: 40px 16px 56px; display: flex; flex-direction: column; gap: 24px">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 34px; font-weight: 700; letter-spacing: -0.02em">Shops</h1>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="#" aria-current="page" style="background: #B45309; color: #FFFFFF; border-radius: 10px; padding: 9px 14px; font-size: 14px; font-weight: 600">Pending</a>
+<a href="#" style="background: #FFFFFF; color: #1C1917; border: 1px solid #D6D3D1; border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 500">Approved</a>
+<a href="#" style="background: #FFFFFF; color: #1C1917; border: 1px solid #D6D3D1; border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 500">Rejected</a>
+<a href="#" style="background: #FFFFFF; color: #1C1917; border: 1px solid #D6D3D1; border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 500">Suspended</a>
+<a href="#" style="background: #FFFFFF; color: #1C1917; border: 1px solid #D6D3D1; border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 500">All</a>
+</div>
+
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+<li>
+<a href="#" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 16px 20px; color: #1C1917">
+<div style="min-width: 0; flex: 1 1 320px">
+<p style="margin: 0; font-weight: 700; font-size: 16px">Sunrise Tiffin Centre</p>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">/sunrise-tiffin · Restaurant / cafe · owner1@example.com</p>
+<p style="margin: 2px 0 0; font-size: 12px; color: #57534E">Created 19 Nov 2026, 04:20 UTC</p>
+</div>
+<span style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px">Pending approval</span>
+</a>
+</li>
+<li>
+<a href="#" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 16px 20px; color: #1C1917">
+<div style="min-width: 0; flex: 1 1 320px">
+<p style="margin: 0; font-weight: 700; font-size: 16px">Oak &amp; Teak Furniture</p>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">/oak-teak · Furniture · owner2@example.com</p>
+<p style="margin: 2px 0 0; font-size: 12px; color: #57534E">Created 18 Nov 2026, 15:05 UTC</p>
+</div>
+<span style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px">Pending approval</span>
+</a>
+</li>
+<li>
+<a href="#" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 16px 20px; color: #1C1917">
+<div style="min-width: 0; flex: 1 1 320px">
+<p style="margin: 0; font-weight: 700; font-size: 16px">Green Basket Grocery</p>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">/green-basket · Grocery · owner3@example.com</p>
+<p style="margin: 2px 0 0; font-size: 12px; color: #57534E">Created 18 Nov 2026, 09:47 UTC</p>
+</div>
+<span style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px">Pending approval</span>
+</a>
+</li>
+<li>
+<a href="#" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 14px; padding: 16px 20px; color: #1C1917">
+<div style="min-width: 0; flex: 1 1 320px">
+<p style="margin: 0; font-weight: 700; font-size: 16px">Seaview Residency</p>
+<p style="margin: 2px 0 0; font-size: 14px; color: #57534E">/seaview-residency · Hotel · owner4@example.com</p>
+<p style="margin: 2px 0 0; font-size: 12px; color: #57534E">Created 17 Nov 2026, 11:30 UTC</p>
+</div>
+<span style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px">Pending approval</span>
+</a>
+</li>
+</ul>
+
+<p style="margin: 0; font-size: 13px; color: #57534E">Select a shop to review its details, edit its menu and approve or reject it.</p>
+</main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu: your selection</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+
+</head>
+<body>
+
+<div style="position: relative; min-height: 844px; display: flex; flex-direction: column; justify-content: flex-end; background: #FAF8F5; color: #1C1917; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; overflow: hidden">
+
+<!-- The menu behind the sheet (dimmed) -->
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0">
+<div style="background: #B45309; height: 110px; padding: 32px 16px 0; box-sizing: border-box"><div style="width: 150px; height: 28px; border-radius: 6px; background: #D97706"></div></div>
+<div style="padding: 24px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="height: 24px; width: 110px; border-radius: 6px; background: #E7E5E4"></div>
+<div style="height: 96px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E7E5E4"></div>
+<div style="height: 96px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E7E5E4"></div>
+<div style="height: 96px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E7E5E4"></div>
+</div>
+</div>
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(28, 25, 23, 0.5)"></div>
+
+<!-- Sheet -->
+<div role="dialog" aria-label="Your selection" style="position: relative; background: #FFFFFF; border-radius: 20px 20px 0 0; padding: 20px 20px 24px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Your selection</h2>
+<button type="button" style="border: 0; background: transparent; color: #44403C; font-size: 15px; font-family: inherit; padding: 12px 4px">Close</button>
+</div>
+
+<ul style="list-style: none; margin: 8px 0 0; padding: 0">
+<li style="display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid #F5F5F4">
+<div style="min-width: 0; flex: 1">
+<div style="font-size: 15px; font-weight: 600">Veg Sandwich</div>
+<div style="font-size: 13px; color: #57534E; margin-top: 2px">₹80.00 × 1</div>
+</div>
+<div style="display: flex; align-items: center; gap: 6px">
+<button type="button" aria-label="Remove one Veg Sandwich" style="width: 36px; height: 36px; border: 1px solid #D6D3D1; background: #FFFFFF; border-radius: 8px; font-size: 18px; line-height: 1; color: #1C1917">−</button>
+<span style="min-width: 16px; text-align: center; font-size: 14px; font-weight: 600">1</span>
+<button type="button" aria-label="Add one more Veg Sandwich" style="width: 36px; height: 36px; border: 1px solid #D6D3D1; background: #FFFFFF; border-radius: 8px; font-size: 18px; line-height: 1; color: #1C1917">+</button>
+</div>
+<span style="width: 72px; text-align: right; font-size: 15px; font-weight: 600">₹80.00</span>
+</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 12px 0">
+<div style="min-width: 0; flex: 1">
+<div style="font-size: 15px; font-weight: 600">Masala Dosa</div>
+<div style="font-size: 13px; color: #57534E; margin-top: 2px">₹95.00 × 2</div>
+</div>
+<div style="display: flex; align-items: center; gap: 6px">
+<button type="button" aria-label="Remove one Masala Dosa" style="width: 36px; height: 36px; border: 1px solid #D6D3D1; background: #FFFFFF; border-radius: 8px; font-size: 18px; line-height: 1; color: #1C1917">−</button>
+<span style="min-width: 16px; text-align: center; font-size: 14px; font-weight: 600">2</span>
+<button type="button" aria-label="Add one more Masala Dosa" style="width: 36px; height: 36px; border: 1px solid #D6D3D1; background: #FFFFFF; border-radius: 8px; font-size: 18px; line-height: 1; color: #1C1917">+</button>
+</div>
+<span style="width: 72px; text-align: right; font-size: 15px; font-weight: 600">₹190.00</span>
+</li>
+</ul>
+
+<div style="margin-top: 8px; padding-top: 16px; border-top: 1px solid #E7E5E4; display: flex; align-items: baseline; justify-content: space-between">
+<span style="font-size: 18px; font-weight: 700">Total</span>
+<span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">₹270.00</span>
+</div>
+
+<div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px">
+<a href="#" style="display: flex; align-items: center; justify-content: center; background: #15803D; color: #FFFFFF; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 600; text-decoration: none">Send on WhatsApp</a>
+<div style="display: flex; gap: 10px">
+<button type="button" style="flex: 1; border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; font-family: inherit">Copy order</button>
+<button type="button" style="flex: 1; border: 1px solid #D6D3D1; background: #FFFFFF; color: #1C1917; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 500; font-family: inherit">Clear</button>
+</div>
+</div>
+<p style="margin: 14px 0 0; font-size: 12px; color: #57534E">This is a calculator only. Prices are confirmed by the shop.</p>
+</div>
+</div>
+
+</body>
+</html>

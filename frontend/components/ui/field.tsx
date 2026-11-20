@@ -1,4 +1,4 @@
-import { FormState } from '@/lib/types';
+import { FormState } from '@/actions/util';
 import { ComponentProps } from 'react';
 
 function Field({ className = '', ...props }: ComponentProps<'div'>) {
@@ -31,6 +31,7 @@ function FieldError({ errors }: { errors: string[] }) {
 }
 
 function FormError({ state }: { state: FormState }) {
+  console.log('STATE', state);
   if (state?.error)
     return (
       <Field>

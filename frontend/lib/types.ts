@@ -101,13 +101,3 @@ export interface PublicMenu {
   };
   groups: PublicGroup[];
 }
-
-export type FormState =
-  | {
-      error?: string;
-      message?: string;
-      fieldErrors?: Record<string, string[] | undefined>;
-      /** Non-secret field values, so inputs are not wiped when a submit fails. */
-      values?: Record<string, string>;
-    }
-  | undefined;

@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import { Bricolage_Grotesque } from 'next/font/google';
-
-const bricolage = Bricolage_Grotesque({
-  subsets: ['latin'],
-  weight: ['700'],
-  variable: '--font-bricolage',
-});
+import Button from '@/components/ui/button';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import Input from '@/components/ui/input';
+import Select from '@/components/ui/select';
+import Textarea from '@/components/ui/textarea';
+import { useState, SubmitEvent } from 'react';
 
 const SHOP_TYPES = [
   'Restaurant / cafe',
@@ -50,7 +48,7 @@ export default function CreateShop() {
     setSlug(value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     console.log({
       name,
@@ -65,16 +63,11 @@ export default function CreateShop() {
   };
 
   return (
-    <section
-      className={`${bricolage.variable} mx-auto max-w-[896px] px-4 pb-14 pt-10 font-sans text-[#1C1917]`}
-    >
-      <h1
-        className='m-0 text-[34px] font-bold tracking-[-0.02em]'
-        style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
-      >
+    <section className={` mx-auto max-w-4xl px-4 pb-14 pt-10 font-sans`}>
+      <h1 className='font-bricolage m-0 text-[34px] font-bold tracking-[-0.02em]'>
         Create your shop
       </h1>
-      <p className='m-0 mt-2 max-w-[560px] text-base text-[#44403C]'>
+      <p className='m-0 mt-2 max-w-140 text-base text-[#44403C]'>
         Tell us about your shop. An administrator reviews new shops before the
         public menu goes live.
       </p>
@@ -83,171 +76,95 @@ export default function CreateShop() {
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className='box-border flex max-w-[576px] flex-[1_1_480px] flex-col gap-[18px] rounded-[14px] border border-[#E7E5E4] bg-white p-6'
+          className='box-border flex max-w-xl flex-[1_1_480px] flex-col gap-4.5 rounded-[14px] border border-[#E7E5E4] bg-white p-6'
         >
-          <div>
-            <label
-              htmlFor='name'
-              className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-            >
-              Shop name
-            </label>
-            <input
-              id='name'
+          <Field>
+            <FieldLabel htmlFor='shopName'>Shop name</FieldLabel>
+            <Input
+              name='shopName'
+              id='shopName'
               type='text'
-              value={name}
-              onChange={(e) => handleNameChange(e.target.value)}
               required
-              className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
+              placeholder='Demo Cafe'
             />
-          </div>
+          </Field>
 
-          <div>
-            <label
-              htmlFor='slug'
-              className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-            >
-              Web address
-            </label>
+          <Field>
+            <FieldLabel htmlFor='slug'>slug</FieldLabel>
             <div className='flex items-center gap-2'>
               <span className='text-[15px] text-[#57534E]'>/</span>
-              <input
+              <Input
                 id='slug'
                 type='text'
-                value={slug}
-                onChange={(e) => handleSlugChange(e.target.value)}
+                name='slug'
                 required
-                className='box-border min-w-0 flex-1 rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
+                placeholder='demo-cafe'
               />
             </div>
-            <p className='m-0 mt-1.5 text-[13px] text-[#57534E]'>
+            <FieldDescription>
               Lowercase letters, numbers and hyphens. It cannot be changed
               later.
-            </p>
-          </div>
+            </FieldDescription>
+          </Field>
 
           <div className='flex flex-wrap gap-4'>
             <div className='flex-[1_1_200px]'>
-              <label
-                htmlFor='type'
-                className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-              >
-                Type of shop
-              </label>
-              <select
-                id='type'
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-              >
-                {SHOP_TYPES.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+              <Field>
+                <FieldLabel htmlFor='type'>Type of shop</FieldLabel>
+                <Select id='type' name='type'>
+                  {SHOP_TYPES.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
             </div>
 
             <div className='flex-[1_1_140px]'>
-              <label
-                htmlFor='cur'
-                className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-              >
-                Currency
-              </label>
-              <select
-                id='cur'
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-              >
-                {CURRENCIES.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+              <Field>
+                <FieldLabel htmlFor='currency'>Currency</FieldLabel>
+                <Select id='currency' name='currency'>
+                  {CURRENCIES.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
             </div>
           </div>
-
-          <div>
-            <label
-              htmlFor='desc'
-              className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-            >
-              Short description
-            </label>
-            <textarea
-              id='desc'
-              rows={2}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className='box-border w-full resize-y rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-            />
-          </div>
+          <Field>
+            <FieldLabel htmlFor='description'>Short description</FieldLabel>
+            <Textarea rows={2} id='description' name='description' />
+          </Field>
 
           <div className='flex flex-wrap gap-4'>
             <div className='flex-[1_1_200px]'>
-              <label
-                htmlFor='phone'
-                className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-              >
-                Phone
-              </label>
-              <input
-                id='phone'
-                type='text'
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-              />
+              <Field>
+                <FieldLabel htmlFor='phone'>Phone</FieldLabel>
+                <Input id='phone' name='phone' type='text' />
+              </Field>
             </div>
 
             <div className='flex-[1_1_200px]'>
-              <label
-                htmlFor='wa'
-                className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-              >
-                WhatsApp number
-              </label>
-              <input
-                id='wa'
-                type='text'
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
-                className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-              />
+              <Field>
+                <FieldLabel htmlFor='wa'>WhatsApp number</FieldLabel>
+                <Input id='wa' name='wa' type='text' />
+              </Field>
             </div>
+            <FieldDescription>
+              With country code. Adds a “Send on WhatsApp” button to your menu.
+            </FieldDescription>
           </div>
+          <Field>
+            <FieldLabel htmlFor='address'>Address</FieldLabel>
+            <Input id='address' name='address' type='text' />
+          </Field>
 
-          <p className='m-0 -mt-2 text-[13px] text-[#57534E]'>
-            With country code. Adds a “Send on WhatsApp” button to your menu.
-          </p>
-
-          <div>
-            <label
-              htmlFor='addr'
-              className='mb-1.5 block text-xs font-semibold uppercase tracking-[0.05em] text-[#57534E]'
-            >
-              Address
-            </label>
-            <input
-              id='addr'
-              type='text'
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className='box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-[11px] text-[15px] text-[#1C1917] focus:border-[#B45309] focus:outline-none'
-            />
-          </div>
-
-          <div className='flex items-center gap-3'>
-            <button
-              type='submit'
-              className='rounded-[10px] border-0 bg-[#B45309] px-5 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-[#92400E]'
-            >
-              Create shop
-            </button>
-          </div>
+          <Field>
+            <Button type='submit'>Create shop</Button>
+          </Field>
         </form>
 
         {/* Info Sidebar */}

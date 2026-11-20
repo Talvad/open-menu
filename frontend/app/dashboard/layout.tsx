@@ -4,6 +4,7 @@ import { getSession } from '@/lib/auth/session';
 const menu = [
   { href: '/dashboard', label: 'Overview' },
   { href: '/dashboard/menu', label: 'Menu' },
+  { href: '/dashboard/settings', label: 'Settings' },
 ];
 export default async function RootLayout({
   children,

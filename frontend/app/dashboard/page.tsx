@@ -7,5 +7,5 @@ export default async function DashboardPage() {
   if (!shop) {
     return <CreateShop />;
   }
-  return <OwnerOverview />;
+  return <OwnerOverview shop={shop} />;
 }

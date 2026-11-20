@@ -1,17 +1,27 @@
-import { assertScope, getAuth } from "../lib/auth";
-import { errorResponse, HttpError, json, type ApiEvent } from "../lib/http";
-import { getMe } from "../routes/shops";
-import type { Handler } from "../routes/types";
+import { assertScope, getAuth } from '../lib/auth';
+import { errorResponse, HttpError, json, type ApiEvent } from '../lib/http';
+import {
+  createShop,
+  getMe,
+  getShop,
+  submitShop,
+  updateShop,
+} from '../routes/shops';
+import type { Handler } from '../routes/types';
 
 /** Keys must match the routes declared in template.yaml (API Gateway's routeKey). */
 const routes: Record<string, Handler> = {
-  "GET /me": getMe,
+  'GET /me': getMe,
+  'POST /shops': createShop,
+  'GET /shops/{shopId}': getShop,
+  'PUT /shops/{shopId}': updateShop,
+  'POST /shops/{shopId}/submit': submitShop,
 };
 
 export const handler = async (event: ApiEvent) => {
   try {
     const route = routes[event.routeKey];
-    if (!route) throw new HttpError(404, "Not found");
+    if (!route) throw new HttpError(404, 'Not found');
 
     // API Gateway already rejected tokens without the route's scope; this is the second, in-code check.
     const auth = getAuth(event);

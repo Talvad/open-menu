@@ -1,5 +1,14 @@
 @import 'tailwindcss';
 
+@theme inline {
+  /* COLORS */
+  --color-primary: #b45309;
+  --color-background: #faf8f5;
+  --color-foreground: #1c1917;
+  /* FONTS */
+  --font-bricolage: var(--font-bricolage);
+}
+
 :root {
   color-scheme: light;
 }

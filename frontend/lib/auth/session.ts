@@ -45,7 +45,6 @@ export const getSession = cache(async (): Promise<Session | null> => {
   if (!idToken || !accessToken) return null;
   try {
     verifiers ??= makeVerifiers();
-    console.log('VERIFIERS', verifiers);
     const [idPayload, accessPayload] = await Promise.all([
       verifiers.id.verify(idToken),
       verifiers.access.verify(accessToken),

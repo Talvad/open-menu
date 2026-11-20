@@ -1,4 +1,5 @@
 import AppHeader from '@/components/app-header';
+import Button from '@/components/ui/button';
 import Link from 'next/link';
 
 function BrandLogo({
@@ -45,43 +46,12 @@ function BrandLogo({
 
 export default function HomePage() {
   return (
-    <div className={` min-h-350 bg-[#FAF8F5] font-sans text-[#1C1917]`}>
-      <AppHeader />
-      {/* Header */}
-      <header className='mx-auto flex max-w-280 flex-wrap items-center justify-between gap-3 px-6 py-5'>
-        <Link href='/' className='inline-flex items-center gap-2.5'>
-          <BrandLogo size={40} clipId='l1' />
-          <span
-            className='text-[28px] font-bold leading-none tracking-[-0.02em] text-[#1C1917]'
-            style={{
-              fontFamily: 'var(--font-bricolage), system-ui, sans-serif',
-            }}
-          >
-            Open <span className='text-[#B45309]'>Menu</span>
-          </span>
-        </Link>
-
-        <nav className='flex items-center gap-5 text-sm'>
-          <Link
-            href='/demo-menu'
-            className='px-1 py-3 font-medium text-[#1C1917] transition-opacity hover:opacity-80'
-          >
-            See a demo menu
-          </Link>
-          <Link
-            href='/signin'
-            className='px-1 py-3 font-medium text-[#1C1917] transition-opacity hover:opacity-80'
-          >
-            Sign in
-          </Link>
-          <Link
-            href='/create'
-            className='rounded-[10px] bg-[#B45309] px-4.5 py-3 font-semibold text-white transition-colors hover:bg-[#92400E]'
-          >
-            Create your shop
-          </Link>
-        </nav>
-      </header>
+    <div className={`min-h-350`}>
+      <AppHeader>
+        <span className='font-bricolage text-xl sm:text-2xl font-bold leading-none tracking-[-0.02em] text-foreground'>
+          Open <span className='text-primary'>Menu</span>
+        </span>
+      </AppHeader>
 
       {/* Hero */}
       <section className='mx-auto flex max-w-280 flex-wrap items-center gap-14 px-6 pb-22 pt-14'>
@@ -90,12 +60,7 @@ export default function HomePage() {
             For restaurants, hotels, groceries and stores
           </span>
 
-          <h1
-            className='m-0 text-[clamp(38px,6vw,60px)] font-bold leading-[1.04] tracking-[-0.03em]'
-            style={{
-              fontFamily: 'var(--font-bricolage), system-ui, sans-serif',
-            }}
-          >
+          <h1 className='m-0 font-bricolage text-[clamp(38px,6vw,60px)] font-bold leading-[1.04] tracking-[-0.03em]'>
             A menu your customers can open with one scan.
           </h1>
 
@@ -106,17 +71,13 @@ export default function HomePage() {
           </p>
 
           <div className='flex flex-wrap items-center gap-3'>
-            <Link
-              href='/create'
-              className='rounded-xl bg-[#B45309] px-5.5 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#92400E]'
-            >
-              Create your shop
+            <Link href='/create'>
+              <Button size='lg'>Create your shop</Button>
             </Link>
-            <Link
-              href='/auth/google'
-              className='rounded-xl border border-[#D6D3D1] bg-white px-5.5 py-3.25 text-base font-semibold text-[#1C1917] transition-colors hover:bg-stone-50'
-            >
-              Continue with Google
+            <Link href='/auth/google'>
+              <Button variant='outline' size='lg'>
+                Continue with Google
+              </Button>
             </Link>
           </div>
 
@@ -127,15 +88,10 @@ export default function HomePage() {
 
         {/* Phone Preview */}
         <div className='flex min-w-0 flex-[1_1_340px] justify-center'>
-          <div className='box-border w-75 rounded-[40px] bg-[#1C1917] p-2.5 shadow-[0_24px_48px_rgba(28,25,23,0.18)]'>
-            <div className='flex h-140 flex-col overflow-hidden rounded-4xl bg-[#FAF8F5]'>
-              <div className='bg-[#B45309] px-4.5 pb-4 pt-7 text-white'>
-                <div
-                  className='text-2xl font-bold tracking-[-0.02em]'
-                  style={{
-                    fontFamily: 'var(--font-bricolage), system-ui, sans-serif',
-                  }}
-                >
+          <div className='box-border w-75 rounded-[40px] bg-foreground p-2.5 shadow-[0_24px_48px_rgba(28,25,23,0.18)]'>
+            <div className='flex h-140 flex-col overflow-hidden rounded-4xl bg-background'>
+              <div className='bg-primary px-4.5 pb-4 pt-7 text-white'>
+                <div className='font-bricolage text-2xl font-bold tracking-[-0.02em]'>
                   Demo Cafe
                 </div>
                 <div className='mt-0.5 text-xs text-[#FFF3DC]'>Kuzhithurai</div>
@@ -153,13 +109,14 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className='flex items-center gap-2 text-sm'>
-                    <span className='inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg border border-[#D6D3D1]'>
-                      −
-                    </span>
+                    <Button size='sm' variant='outline' className='p-1! '>
+                      -
+                    </Button>
+
                     <span className='font-semibold'>1</span>
-                    <span className='inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg bg-[#B45309] text-white'>
+                    <Button size='sm' className='p-1!'>
                       +
-                    </span>
+                    </Button>
                   </div>
                 </div>
 
@@ -172,13 +129,13 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className='flex items-center gap-2 text-sm'>
-                    <span className='inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg border border-[#D6D3D1]'>
-                      −
-                    </span>
+                    <Button size='sm' variant='outline' className='p-1!'>
+                      -
+                    </Button>
                     <span className='font-semibold'>2</span>
-                    <span className='inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg bg-[#B45309] text-white'>
+                    <Button size='sm' className='p-1!'>
                       +
-                    </span>
+                    </Button>
                   </div>
                 </div>
 
@@ -197,10 +154,10 @@ export default function HomePage() {
               </div>
 
               <div className='border-t border-[#E7E5E4] bg-white p-3'>
-                <div className='flex justify-between rounded-xl bg-[#B45309] px-3.5 py-3 text-sm font-semibold text-white'>
+                <Button className='w-full flex justify-between'>
                   <span>3 items · View total</span>
                   <span>₹270.00</span>
-                </div>
+                </Button>
               </div>
             </div>
           </div>

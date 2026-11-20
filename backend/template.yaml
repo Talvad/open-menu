@@ -380,6 +380,126 @@ Resources:
                   },
               },
           }
+        GetMenu:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: '/shops/{shopId}/menu',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.read],
+                  },
+              },
+          }
+        CreateGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/groups',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UpdateGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: PUT,
+                Path: '/shops/{shopId}/groups/{groupId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        DeleteGroup:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: DELETE,
+                Path: '/shops/{shopId}/groups/{groupId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        CreateItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/items',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UpdateItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: PUT,
+                Path: '/shops/{shopId}/items/{itemId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        DeleteItem:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: DELETE,
+                Path: '/shops/{shopId}/items/{itemId}',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        UploadUrl:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/upload-url',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
 
 Outputs:
   ApiUrl:

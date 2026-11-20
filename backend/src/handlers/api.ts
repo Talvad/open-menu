@@ -1,6 +1,15 @@
 import { assertScope, getAuth } from '../lib/auth';
 import { errorResponse, HttpError, json, type ApiEvent } from '../lib/http';
 import {
+  createGroup,
+  createItem,
+  deleteGroup,
+  deleteItem,
+  getMenu,
+  updateGroup,
+  updateItem,
+} from '../routes/menu';
+import {
   createShop,
   getMe,
   getShop,
@@ -8,6 +17,7 @@ import {
   updateShop,
 } from '../routes/shops';
 import type { Handler } from '../routes/types';
+import { createUploadUrl } from '../routes/uploads';
 
 /** Keys must match the routes declared in template.yaml (API Gateway's routeKey). */
 const routes: Record<string, Handler> = {
@@ -16,6 +26,14 @@ const routes: Record<string, Handler> = {
   'GET /shops/{shopId}': getShop,
   'PUT /shops/{shopId}': updateShop,
   'POST /shops/{shopId}/submit': submitShop,
+  'GET /shops/{shopId}/menu': getMenu,
+  'POST /shops/{shopId}/groups': createGroup,
+  'PUT /shops/{shopId}/groups/{groupId}': updateGroup,
+  'DELETE /shops/{shopId}/groups/{groupId}': deleteGroup,
+  'POST /shops/{shopId}/items': createItem,
+  'PUT /shops/{shopId}/items/{itemId}': updateItem,
+  'DELETE /shops/{shopId}/items/{itemId}': deleteItem,
+  'POST /shops/{shopId}/upload-url': createUploadUrl,
 };
 
 export const handler = async (event: ApiEvent) => {

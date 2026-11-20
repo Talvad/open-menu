@@ -10,7 +10,7 @@ type Props = {
   homeLink?: string;
 };
 export default function AppHeader({
-  logo = '',
+  logo = '/logo.svg',
   loggedIn = false,
   title = 'OpenMenu',
   email = '',
@@ -20,7 +20,11 @@ export default function AppHeader({
   return (
     <header className='px-10 py-4 border-b border-b-gray-300 flex items-center justify-between'>
       <Link href={homeLink}>
-        {logo ? <Image src={logo} alt={title} priority /> : <h2>{title}</h2>}
+        {logo ? (
+          <Image src={logo} alt={title} width={40} height={40} priority />
+        ) : (
+          <h2>{title}</h2>
+        )}
       </Link>
       <Link href={loggedIn ? '/dashboard' : '/auth/login'}>
         {loggedIn ? 'Dashboard' : 'Login'}

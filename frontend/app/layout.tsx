@@ -1,6 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { Bricolage_Grotesque } from 'next/font/google';
 
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-bricolage',
+});
 export const metadata: Metadata = {
   title: { default: 'Open Menu', template: '%s · Open Menu' },
   description:
@@ -20,7 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className='min-h-screen antialiased'>{children}</body>
+      <body className={`${bricolage.variable} min-h-screen antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }

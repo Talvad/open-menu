@@ -103,7 +103,7 @@ export function ImageUpload({
           </div>
         )}
         <label
-          className={`inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-2 py-1 text-sm font-medium hover:bg-stone-100 disabled:opacity-50 cursor-pointer`}
+          className={`inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs font-medium hover:bg-stone-100 disabled:opacity-50 cursor-pointer`}
         >
           {busy ? 'Uploading…' : preview ? 'Change' : 'Upload'}
           <input

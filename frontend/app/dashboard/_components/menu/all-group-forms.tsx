@@ -1,6 +1,8 @@
 import { MenuGroup, MenuItem, Shop } from '@/lib/types';
 import EditGroupForm from './edit-group-form';
 import CreateItemForm from './create-item-form';
+import ItemRow from './item-row';
+import { formatMoney } from '@/lib/format';
 
 type Props = {
   shop: Shop;
@@ -16,6 +18,7 @@ export default function AllGroupForm({ shop, groups = [], items = [] }: Props) {
         add items to it.
       </p>
     );
+  const money = (n: number) => formatMoney(n, shop.currency);
   return (
     <>
       {groups.map((group) => {
@@ -38,6 +41,17 @@ export default function AllGroupForm({ shop, groups = [], items = [] }: Props) {
             </div>
 
             <EditGroupForm shopId={shop.id} group={group} />
+            <ul className='mt-4 divide-y divide-stone-100'>
+              {groupItems.map((item) => (
+                <ItemRow
+                  key={item.id}
+                  item={item}
+                  shopId={shop.id}
+                  groups={groups}
+                  price={money(item.price)}
+                />
+              ))}
+            </ul>
             <CreateItemForm groups={groups} group={group} shop={shop} />
           </div>
         );

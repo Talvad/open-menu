@@ -3,6 +3,7 @@ import Image from 'next/image';
 import ToggleItemForm from './toggle-item-form';
 import VisibilityItemForm from './visibility-item-form';
 import DeleteItemForm from './delete-item-form';
+import EditItemForm from './edit-item-form';
 
 export default function ItemRow({
   item,
@@ -68,25 +69,7 @@ export default function ItemRow({
         <DeleteItemForm shopId={shopId} itemId={item.id} />
       </div>
 
-      <details className='mt-2 pl-17'>
-        <summary className='cursor-pointer text-sm text-amber-700'>
-          Edit
-        </summary>
-        {/* <ActionForm
-          action={saveItemAction}
-          submitLabel='Save item'
-          className='mt-3 space-y-3 rounded-lg bg-stone-50 p-3'
-        >
-          <input type='hidden' name='shopId' value={shopId} />
-          <input type='hidden' name='itemId' value={item.id} />
-          <ItemFields
-            shopId={shopId}
-            groups={groups}
-            item={item}
-            defaultGroupId={item.groupId}
-          />
-        </ActionForm> */}
-      </details>
+      <EditItemForm shopId={shopId} item={item} groups={groups} />
     </li>
   );
 }

@@ -1,6 +1,7 @@
 import { MenuGroup, MenuItem } from '@/lib/types';
 import Image from 'next/image';
 import ToggleItemForm from './toggle-item-form';
+import VisibilityItemForm from './visibility-item-form';
 
 export default function ItemRow({
   item,
@@ -58,26 +59,12 @@ export default function ItemRow({
           itemId={item.id}
           available={item.available}
         />
-        {/* <ActionForm
-          action={toggleItemAction}
-          submitLabel={item.available ? 'Mark sold out' : 'Mark available'}
-          variant='small'
-        >
-          <input type='hidden' name='shopId' value={shopId} />
-          <input type='hidden' name='itemId' value={item.id} />
-          <input type='hidden' name='field' value='available' />
-          <input type='hidden' name='value' value={String(!item.available)} />
-        </ActionForm> */}
-        {/* <ActionForm
-          action={toggleItemAction}
-          submitLabel={item.visible ? 'Hide' : 'Show'}
-          variant='small'
-        >
-          <input type='hidden' name='shopId' value={shopId} />
-          <input type='hidden' name='itemId' value={item.id} />
-          <input type='hidden' name='field' value='visible' />
-          <input type='hidden' name='value' value={String(!item.visible)} />
-        </ActionForm> */}
+        <VisibilityItemForm
+          shopId={shopId}
+          itemId={item.id}
+          visible={item.visible}
+        />
+
         {/* <ActionForm
           action={deleteItemAction}
           submitLabel='Delete'

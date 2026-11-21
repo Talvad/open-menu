@@ -2,6 +2,7 @@ import { MenuGroup, MenuItem } from '@/lib/types';
 import Image from 'next/image';
 import ToggleItemForm from './toggle-item-form';
 import VisibilityItemForm from './visibility-item-form';
+import DeleteItemForm from './delete-item-form';
 
 export default function ItemRow({
   item,
@@ -64,23 +65,14 @@ export default function ItemRow({
           itemId={item.id}
           visible={item.visible}
         />
-
-        {/* <ActionForm
-          action={deleteItemAction}
-          submitLabel='Delete'
-          variant='small'
-          confirm={`Delete "${item.name}"?`}
-        >
-          <input type='hidden' name='shopId' value={shopId} />
-          <input type='hidden' name='itemId' value={item.id} />
-        </ActionForm> */}
+        <DeleteItemForm shopId={shopId} itemId={item.id} />
       </div>
 
-      {/* <details className='mt-2 pl-[4.25rem]'>
+      <details className='mt-2 pl-17'>
         <summary className='cursor-pointer text-sm text-amber-700'>
           Edit
         </summary>
-        <ActionForm
+        {/* <ActionForm
           action={saveItemAction}
           submitLabel='Save item'
           className='mt-3 space-y-3 rounded-lg bg-stone-50 p-3'
@@ -93,8 +85,8 @@ export default function ItemRow({
             item={item}
             defaultGroupId={item.groupId}
           />
-        </ActionForm>
-      </details> */}
+        </ActionForm> */}
+      </details>
     </li>
   );
 }

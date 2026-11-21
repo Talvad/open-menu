@@ -1,5 +1,6 @@
 import { MenuGroup, MenuItem } from '@/lib/types';
 import Image from 'next/image';
+import ToggleItemForm from './toggle-item-form';
 
 export default function ItemRow({
   item,
@@ -51,8 +52,13 @@ export default function ItemRow({
         </div>
       </div>
 
-      {/* <div className='mt-2 flex flex-wrap items-start gap-2 pl-[4.25rem]'>
-        <ActionForm
+      <div className='-mt-2 flex flex-wrap items-start gap-2 pl-17'>
+        <ToggleItemForm
+          shopId={shopId}
+          itemId={item.id}
+          available={item.available}
+        />
+        {/* <ActionForm
           action={toggleItemAction}
           submitLabel={item.available ? 'Mark sold out' : 'Mark available'}
           variant='small'
@@ -61,8 +67,8 @@ export default function ItemRow({
           <input type='hidden' name='itemId' value={item.id} />
           <input type='hidden' name='field' value='available' />
           <input type='hidden' name='value' value={String(!item.available)} />
-        </ActionForm>
-        <ActionForm
+        </ActionForm> */}
+        {/* <ActionForm
           action={toggleItemAction}
           submitLabel={item.visible ? 'Hide' : 'Show'}
           variant='small'
@@ -71,8 +77,8 @@ export default function ItemRow({
           <input type='hidden' name='itemId' value={item.id} />
           <input type='hidden' name='field' value='visible' />
           <input type='hidden' name='value' value={String(!item.visible)} />
-        </ActionForm>
-        <ActionForm
+        </ActionForm> */}
+        {/* <ActionForm
           action={deleteItemAction}
           submitLabel='Delete'
           variant='small'
@@ -80,10 +86,10 @@ export default function ItemRow({
         >
           <input type='hidden' name='shopId' value={shopId} />
           <input type='hidden' name='itemId' value={item.id} />
-        </ActionForm>
+        </ActionForm> */}
       </div>
 
-      <details className='mt-2 pl-[4.25rem]'>
+      {/* <details className='mt-2 pl-[4.25rem]'>
         <summary className='cursor-pointer text-sm text-amber-700'>
           Edit
         </summary>

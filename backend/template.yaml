@@ -577,20 +577,23 @@ Resources:
 
 Outputs:
   ApiUrl:
-    Description: Put this in web/.env.local as API_URL
+    Description: Put this in frontend/.env.local as API_URL
     Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
   CognitoDomain:
-    Description: Put this in web/.env.local as COGNITO_DOMAIN
+    Description: Put this in frontend/.env.local as COGNITO_DOMAIN
     Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com
   UserPoolId:
-    Description: nextjs/.env.local COGNITO_USER_POOL_ID
+    Description: frontend/.env.local COGNITO_USER_POOL_ID
     Value: !Ref UserPool
   UserPoolClientId:
-    Description: nextjs/.env.local COGNITO_CLIENT_ID
+    Description: frontend/.env.local COGNITO_CLIENT_ID
     Value: !Ref UserPoolClient
   TableName:
     Description: DynamoDB table (used by the seed script)
     Value: !Ref Table
+  MediaUrl:
+    Description: frontend/.env.local MEDIA_URL
+    Value: !Sub https://${MediaDistribution.DomainName}
   GoogleRedirectUri:
     Description: Add this as an Authorized redirect URI on your Google OAuth client
     Value: !Sub https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com/oauth2/idpresponse

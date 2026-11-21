@@ -265,6 +265,74 @@ Resources:
       SourceArn: !GetAtt UserPool.Arn
 
   # ---------------------------------------------------------------------------
+  # Media: private S3 bucket served through CloudFront (Origin Access Control)
+  # ---------------------------------------------------------------------------
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [POST, PUT]
+            AllowedOrigins: !Ref WebOrigins
+            AllowedHeaders: ['*']
+            MaxAge: 3000
+
+  MediaOac:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub open-menu-${Stage}-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  MediaDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: media
+            DomainName: !GetAtt MediaBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt MediaOac.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: media
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          AllowedMethods: [GET, HEAD]
+          # Managed policy: CachingOptimized. Object keys are unique (uuid) so long caching is safe.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+
+  MediaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MediaBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub ${MediaBucket.Arn}/*
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${MediaDistribution}
+
+  # ---------------------------------------------------------------------------
   # HTTP API + JWT authorizer (Cognito ID token)
   # ---------------------------------------------------------------------------
   HttpApi:
@@ -301,9 +369,15 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+          MEDIA_BASE_URL: !Sub https://${MediaDistribution.DomainName}
+          MEDIA_BUCKET: !Ref MediaBucket
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action: s3:PutObject
+              Resource: !Sub ${MediaBucket.Arn}/shops/*
       Events:
         Me:
           {

@@ -9,9 +9,9 @@ const classNames: Record<string, string> = {
   normal: 'bg-primary text-white transition-colors hover:bg-[#92400E]',
   outline:
     'border border-primary text-primary bg-transparent transition-colors hover:bg-stone-50',
-  sm: 'px-3 py-1 rounded-sm',
-  md: 'px-4 py-2 rounded-md',
-  lg: 'px-6 py-2.5 rounded-lg',
+  sm: 'px-3 py-1 rounded-sm text-sm',
+  md: 'px-4 py-2 rounded-md text-base',
+  lg: 'px-6 py-2.5 rounded-lg text-lg',
 };
 export default function Button({
   variant = 'normal',

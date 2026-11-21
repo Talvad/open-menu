@@ -9,7 +9,7 @@ export default function MenuManager({ menu }: Props) {
   return (
     <div className='space-y-6'>
       <CreateGroupForm shopId={shop.id} />
-      <AllGroupForm shopId={shop.id} groups={groups} items={items} />
+      <AllGroupForm shop={shop} groups={groups} items={items} />
     </div>
   );
 }

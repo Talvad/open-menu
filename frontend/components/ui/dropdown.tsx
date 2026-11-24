@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Menu } from "@base-ui/react/menu";
-import Link from "next/link";
-import type { ComponentProps } from "react";
+import { Menu } from '@base-ui/react/menu';
+import Link from 'next/link';
+import type { ComponentProps } from 'react';
 
 const cn = (...parts: Array<string | false | null | undefined>) =>
-  parts.filter(Boolean).join(" ");
+  parts.filter(Boolean).join(' ');
 
-type WithClassName<T> = Omit<T, "className"> & { className?: string };
+type WithClassName<T> = Omit<T, 'className'> & { className?: string };
 
 /* -------------------------------------------------------------------------- */
 /* Root                                                                       */
@@ -31,11 +31,11 @@ function DropdownTrigger({ className, ...props }: DropdownTriggerProps) {
     <Menu.Trigger
       {...props}
       className={cn(
-        "inline-flex select-none items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition",
-        "hover:bg-gray-50 data-[popup-open]:bg-gray-100",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-indigo-500",
-        "disabled:cursor-not-allowed disabled:opacity-60",
-        "dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:data-[popup-open]:bg-gray-800",
+        'inline-flex select-none items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition',
+        'hover:bg-gray-50 data-popup-open:bg-gray-100',
+        'focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-indigo-500',
+        'disabled:cursor-not-allowed disabled:opacity-60',
+        'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:data-popup-open:bg-gray-800',
         className,
       )}
     />
@@ -49,12 +49,12 @@ function DropdownTrigger({ className, ...props }: DropdownTriggerProps) {
 export type DropdownMenuProps = WithClassName<
   ComponentProps<typeof Menu.Popup>
 > &
-  Pick<ComponentProps<typeof Menu.Positioner>, "side" | "align" | "sideOffset">;
+  Pick<ComponentProps<typeof Menu.Positioner>, 'side' | 'align' | 'sideOffset'>;
 
 function DropdownMenu({
   className,
-  side = "bottom",
-  align = "start",
+  side = 'bottom',
+  align = 'start',
   sideOffset = 6,
   ...props
 }: DropdownMenuProps) {
@@ -64,16 +64,16 @@ function DropdownMenu({
         side={side}
         align={align}
         sideOffset={sideOffset}
-        className="z-50 outline-none"
+        className='z-50 outline-none'
       >
         <Menu.Popup
           {...props}
           className={cn(
-            "min-w-48 origin-[var(--transform-origin)] rounded-lg border border-gray-200 bg-white py-1 shadow-lg outline-none",
-            "transition-[opacity,transform] duration-150",
-            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
-            "data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
-            "dark:border-gray-700 dark:bg-gray-900",
+            'min-w-48 origin-(--transform-origin) rounded-lg border border-gray-200 bg-white py-1 shadow-lg outline-none',
+            'transition-[opacity,transform] duration-150',
+            'data-starting-style:scale-95 data-starting-style:opacity-0',
+            'data-ending-style:scale-95 data-ending-style:opacity-0',
+            'dark:border-gray-700 dark:bg-gray-900',
             className,
           )}
         />
@@ -104,7 +104,7 @@ function DropdownItem({
 }: DropdownItemProps) {
   const linkRender = href ? (
     /^https?:\/\//.test(href) ? (
-      <a href={href} target="_blank" rel="noopener noreferrer" />
+      <a href={href} target='_blank' rel='noopener noreferrer' />
     ) : (
       <Link href={href} />
     )
@@ -117,11 +117,11 @@ function DropdownItem({
       {...props}
       render={linkRender}
       className={cn(
-        "flex w-full cursor-pointer select-none items-center gap-2 px-3 py-2 text-left text-sm outline-none transition-colors",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+        'flex w-full cursor-pointer select-none items-center gap-2 px-3 py-2 text-left text-sm outline-none transition-colors',
+        'data-disabled:pointer-events-none data-disabled:opacity-40',
         danger
-          ? "text-red-600 data-[highlighted]:bg-red-50 dark:text-red-400 dark:data-[highlighted]:bg-red-500/10"
-          : "text-gray-700 data-[highlighted]:bg-gray-100 dark:text-gray-200 dark:data-[highlighted]:bg-gray-800",
+          ? 'text-red-600 data-highlighted:bg-red-50 dark:text-red-400 dark:data-highlighted:bg-red-500/10'
+          : 'text-gray-700 data-highlighted:bg-gray-100 dark:text-gray-200 dark:data-highlighted:bg-gray-800',
         className,
       )}
     />
@@ -144,7 +144,7 @@ function DropdownLabel({
     <Menu.GroupLabel
       {...props}
       className={cn(
-        "px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500",
+        'px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500',
         className,
       )}
     />
@@ -158,7 +158,7 @@ function DropdownSeparator({
   return (
     <Menu.Separator
       {...props}
-      className={cn("my-1 h-px bg-gray-200 dark:bg-gray-700", className)}
+      className={cn('my-1 h-px bg-gray-200 dark:bg-gray-700', className)}
     />
   );
 }

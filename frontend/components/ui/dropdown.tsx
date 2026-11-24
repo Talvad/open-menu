@@ -1,11 +1,9 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { Menu } from '@base-ui/react/menu';
 import Link from 'next/link';
 import type { ComponentProps } from 'react';
-
-const cn = (...parts: Array<string | false | null | undefined>) =>
-  parts.filter(Boolean).join(' ');
 
 type WithClassName<T> = Omit<T, 'className'> & { className?: string };
 
@@ -27,19 +25,7 @@ export type DropdownTriggerProps = WithClassName<
 >;
 
 function DropdownTrigger({ className, ...props }: DropdownTriggerProps) {
-  return (
-    <Menu.Trigger
-      {...props}
-      className={cn(
-        'inline-flex select-none items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition',
-        'hover:bg-gray-50 data-popup-open:bg-gray-100',
-        'focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-indigo-500',
-        'disabled:cursor-not-allowed disabled:opacity-60',
-        'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:data-popup-open:bg-gray-800',
-        className,
-      )}
-    />
-  );
+  return <Menu.Trigger {...props} />;
 }
 
 /* -------------------------------------------------------------------------- */

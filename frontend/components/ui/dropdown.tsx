@@ -1,315 +1,84 @@
 "use client";
 
+import { Menu } from "@base-ui/react/menu";
 import Link from "next/link";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type ButtonHTMLAttributes,
-  type HTMLAttributes,
-  type KeyboardEvent,
-  type MutableRefObject,
-  type ReactNode,
-  type RefObject,
-  type SyntheticEvent,
-} from "react";
+import type { ComponentProps } from "react";
 
 const cn = (...parts: Array<string | false | null | undefined>) =>
   parts.filter(Boolean).join(" ");
 
-/* -------------------------------------------------------------------------- */
-/* Context                                                                    */
-/* -------------------------------------------------------------------------- */
-
-type FocusTarget = "first" | "last" | "menu";
-
-interface DropdownContextValue {
-  open: boolean;
-  setOpen: (open: boolean, focus?: FocusTarget) => void;
-  close: (returnFocus?: boolean) => void;
-  triggerId: string;
-  menuId: string;
-  triggerRef: RefObject<HTMLButtonElement | null>;
-  menuRef: RefObject<HTMLDivElement | null>;
-  focusTarget: MutableRefObject<FocusTarget>;
-}
-
-const DropdownContext = createContext<DropdownContextValue | null>(null);
-
-function useDropdown() {
-  const ctx = useContext(DropdownContext);
-  if (!ctx) {
-    throw new Error(
-      "Dropdown.* components must be rendered inside <Dropdown>.",
-    );
-  }
-  return ctx;
-}
+type WithClassName<T> = Omit<T, "className"> & { className?: string };
 
 /* -------------------------------------------------------------------------- */
 /* Root                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export interface DropdownProps {
-  children: ReactNode;
-  /** Controlled open state. */
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  className?: string;
-}
-
-function DropdownRoot({
-  children,
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  className,
-}: DropdownProps) {
-  const uid = useId();
-  const isControlled = openProp !== undefined;
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const open = isControlled ? openProp : innerOpen;
-
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const focusTarget = useRef<FocusTarget>("menu");
-
-  const setOpen = useCallback(
-    (next: boolean, focus: FocusTarget = "menu") => {
-      focusTarget.current = focus;
-      if (!isControlled) setInnerOpen(next);
-      onOpenChange?.(next);
-    },
-    [isControlled, onOpenChange],
-  );
-
-  const close = useCallback(
-    (returnFocus = true) => {
-      setOpen(false);
-      if (returnFocus) triggerRef.current?.focus();
-    },
-    [setOpen],
-  );
-
-  // Close on outside click / touch
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent | TouchEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) close(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("touchstart", onDown);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("touchstart", onDown);
-    };
-  }, [open, close]);
-
-  return (
-    <DropdownContext.Provider
-      value={{
-        open,
-        setOpen,
-        close,
-        triggerId: `${uid}-trigger`,
-        menuId: `${uid}-menu`,
-        triggerRef,
-        menuRef,
-        focusTarget,
-      }}
-    >
-      <div
-        ref={rootRef}
-        className={cn("relative inline-block text-left", className)}
-      >
-        {children}
-      </div>
-    </DropdownContext.Provider>
-  );
+// Wrapped (not aliased) so Object.assign below doesn't mutate Base UI's Menu.Root.
+function DropdownRoot(props: ComponentProps<typeof Menu.Root>) {
+  return <Menu.Root {...props} />;
 }
 
 /* -------------------------------------------------------------------------- */
 /* Trigger                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export type DropdownTriggerProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "type"
+export type DropdownTriggerProps = WithClassName<
+  ComponentProps<typeof Menu.Trigger>
 >;
 
-function DropdownTrigger({
-  children,
-  className,
-  onClick,
-  onKeyDown,
-  ...rest
-}: DropdownTriggerProps) {
-  const { open, setOpen, close, triggerId, menuId, triggerRef } = useDropdown();
-
+function DropdownTrigger({ className, ...props }: DropdownTriggerProps) {
   return (
-    <button
-      {...rest}
-      ref={triggerRef}
-      id={triggerId}
-      type="button"
-      aria-haspopup="menu"
-      aria-expanded={open}
-      aria-controls={open ? menuId : undefined}
-      onClick={(e) => {
-        onClick?.(e);
-        if (e.defaultPrevented) return;
-        open ? close() : setOpen(true, "menu");
-      }}
-      onKeyDown={(e) => {
-        onKeyDown?.(e);
-        if (e.defaultPrevented) return;
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          setOpen(true, "first");
-        } else if (e.key === "ArrowUp") {
-          e.preventDefault();
-          setOpen(true, "last");
-        }
-      }}
+    <Menu.Trigger
+      {...props}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition",
-        "hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1",
+        "inline-flex select-none items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition",
+        "hover:bg-gray-50 data-[popup-open]:bg-gray-100",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-indigo-500",
         "disabled:cursor-not-allowed disabled:opacity-60",
-        "dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800",
+        "dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:data-[popup-open]:bg-gray-800",
         className,
       )}
-    >
-      {children}
-    </button>
+    />
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* Menu                                                                       */
+/* Menu (Portal + Positioner + Popup in one)                                  */
 /* -------------------------------------------------------------------------- */
 
-export interface DropdownMenuProps extends HTMLAttributes<HTMLDivElement> {
-  align?: "start" | "end";
-  side?: "bottom" | "top";
-}
+export type DropdownMenuProps = WithClassName<
+  ComponentProps<typeof Menu.Popup>
+> &
+  Pick<ComponentProps<typeof Menu.Positioner>, "side" | "align" | "sideOffset">;
 
-function DropdownMenu(props: DropdownMenuProps) {
-  const { open } = useDropdown();
-  // Mount the content only while open so focus logic runs on each open.
-  return open ? <DropdownMenuContent {...props} /> : null;
-}
-
-function DropdownMenuContent({
-  children,
+function DropdownMenu({
   className,
-  align = "start",
   side = "bottom",
-  onKeyDown,
-  ...rest
+  align = "start",
+  sideOffset = 6,
+  ...props
 }: DropdownMenuProps) {
-  const { close, triggerId, menuId, menuRef, focusTarget } = useDropdown();
-  const typeahead = useRef({
-    buffer: "",
-    timer: 0 as unknown as ReturnType<typeof setTimeout>,
-  });
-
-  const getItems = () =>
-    Array.from(
-      menuRef.current?.querySelectorAll<HTMLElement>(
-        '[role="menuitem"]:not([aria-disabled="true"])',
-      ) ?? [],
-    );
-
-  // Initial focus
-  useEffect(() => {
-    const items = getItems();
-    const target = focusTarget.current;
-    if (target === "first") items[0]?.focus();
-    else if (target === "last") items[items.length - 1]?.focus();
-    else menuRef.current?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => () => clearTimeout(typeahead.current.timer), []);
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    onKeyDown?.(e);
-    if (e.defaultPrevented) return;
-
-    const items = getItems();
-    const idx = items.indexOf(document.activeElement as HTMLElement);
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        items[(idx + 1) % items.length]?.focus();
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        items[
-          idx === -1
-            ? items.length - 1
-            : (idx - 1 + items.length) % items.length
-        ]?.focus();
-        break;
-      case "Home":
-        e.preventDefault();
-        items[0]?.focus();
-        break;
-      case "End":
-        e.preventDefault();
-        items[items.length - 1]?.focus();
-        break;
-      case "Escape":
-        e.preventDefault();
-        close();
-        break;
-      case "Tab":
-        close(false);
-        break;
-      default:
-        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-          const t = typeahead.current;
-          clearTimeout(t.timer);
-          t.buffer += e.key.toLowerCase();
-          t.timer = setTimeout(() => (t.buffer = ""), 500);
-          for (let n = 1; n <= items.length; n++) {
-            const el = items[(idx + n + items.length) % items.length];
-            if (el.textContent?.trim().toLowerCase().startsWith(t.buffer)) {
-              el.focus();
-              break;
-            }
-          }
-        }
-    }
-  };
-
   return (
-    <div
-      {...rest}
-      ref={menuRef}
-      id={menuId}
-      role="menu"
-      aria-labelledby={triggerId}
-      aria-orientation="vertical"
-      tabIndex={-1}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        "absolute z-50 min-w-48 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg outline-none",
-        "dark:border-gray-700 dark:bg-gray-900",
-        align === "end" ? "right-0" : "left-0",
-        side === "top" ? "bottom-full mb-1" : "top-full mt-1",
-        className,
-      )}
-    >
-      {children}
-    </div>
+    <Menu.Portal>
+      <Menu.Positioner
+        side={side}
+        align={align}
+        sideOffset={sideOffset}
+        className="z-50 outline-none"
+      >
+        <Menu.Popup
+          {...props}
+          className={cn(
+            "min-w-48 origin-[var(--transform-origin)] rounded-lg border border-gray-200 bg-white py-1 shadow-lg outline-none",
+            "transition-[opacity,transform] duration-150",
+            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
+            "data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            "dark:border-gray-700 dark:bg-gray-900",
+            className,
+          )}
+        />
+      </Menu.Positioner>
+    </Menu.Portal>
   );
 }
 
@@ -317,116 +86,95 @@ function DropdownMenuContent({
 /* Item                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export interface DropdownItemProps {
-  children: ReactNode;
-  className?: string;
+export interface DropdownItemProps extends WithClassName<
+  ComponentProps<typeof Menu.Item>
+> {
   /** Renders a Next.js <Link> (or a plain <a> for absolute URLs). */
   href?: string;
-  onSelect?: () => void;
-  disabled?: boolean;
   /** Destructive styling (delete, sign out, ...). */
   danger?: boolean;
-  /** Keep the menu open after selecting. Default: true (closes). */
-  closeOnSelect?: boolean;
 }
 
 function DropdownItem({
-  children,
   className,
   href,
-  onSelect,
-  disabled = false,
   danger = false,
-  closeOnSelect = true,
+  render,
+  ...props
 }: DropdownItemProps) {
-  const { close, menuRef } = useDropdown();
-
-  const common = {
-    role: "menuitem" as const,
-    tabIndex: -1,
-    "aria-disabled": disabled || undefined,
-    className: cn(
-      "flex w-full items-center gap-2 px-3 py-2 text-left text-sm outline-none transition-colors",
-      disabled
-        ? "cursor-not-allowed opacity-40"
-        : danger
-          ? "cursor-pointer text-red-600 focus:bg-red-50 dark:text-red-400 dark:focus:bg-red-500/10"
-          : "cursor-pointer text-gray-700 focus:bg-gray-100 dark:text-gray-200 dark:focus:bg-gray-800",
-      className,
-    ),
-    onClick: () => {
-      if (disabled) return;
-      onSelect?.();
-      if (closeOnSelect) close(!href);
-    },
-    onMouseEnter: (e: SyntheticEvent<HTMLElement>) => {
-      if (!disabled) e.currentTarget.focus();
-    },
-    onMouseLeave: () => menuRef.current?.focus(),
-  };
-
-  if (href && !disabled) {
-    return /^https?:\/\//.test(href) ? (
-      <a {...common} href={href} target="_blank" rel="noopener noreferrer">
-        {children}
-      </a>
+  const linkRender = href ? (
+    /^https?:\/\//.test(href) ? (
+      <a href={href} target="_blank" rel="noopener noreferrer" />
     ) : (
-      <Link {...common} href={href}>
-        {children}
-      </Link>
-    );
-  }
+      <Link href={href} />
+    )
+  ) : (
+    render
+  );
 
   return (
-    <button {...common} type="button" disabled={disabled}>
-      {children}
-    </button>
+    <Menu.Item
+      {...props}
+      render={linkRender}
+      className={cn(
+        "flex w-full cursor-pointer select-none items-center gap-2 px-3 py-2 text-left text-sm outline-none transition-colors",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+        danger
+          ? "text-red-600 data-[highlighted]:bg-red-50 dark:text-red-400 dark:data-[highlighted]:bg-red-500/10"
+          : "text-gray-700 data-[highlighted]:bg-gray-100 dark:text-gray-200 dark:data-[highlighted]:bg-gray-800",
+        className,
+      )}
+    />
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* Separator & Label                                                          */
+/* Group, Label, Separator                                                    */
 /* -------------------------------------------------------------------------- */
 
-function DropdownSeparator({ className }: { className?: string }) {
+function DropdownGroup(props: ComponentProps<typeof Menu.Group>) {
+  return <Menu.Group {...props} />;
+}
+
+function DropdownLabel({
+  className,
+  ...props
+}: WithClassName<ComponentProps<typeof Menu.GroupLabel>>) {
   return (
-    <div
-      role="separator"
+    <Menu.GroupLabel
+      {...props}
+      className={cn(
+        "px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500",
+        className,
+      )}
+    />
+  );
+}
+
+function DropdownSeparator({
+  className,
+  ...props
+}: WithClassName<ComponentProps<typeof Menu.Separator>>) {
+  return (
+    <Menu.Separator
+      {...props}
       className={cn("my-1 h-px bg-gray-200 dark:bg-gray-700", className)}
     />
   );
 }
 
-function DropdownLabel({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      role="presentation"
-      className={cn(
-        "px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
-/* Export                                                                     */
+/* Exports                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export const Dropdown = Object.assign(DropdownRoot, {
-  Trigger: DropdownTrigger,
-  Menu: DropdownMenu,
-  Item: DropdownItem,
-  Separator: DropdownSeparator,
-  Label: DropdownLabel,
-});
-
-export default Dropdown;
+// Named exports: use these when importing into a Server Component
+// (dot access like <Dropdown.Item> only works inside Client Components).
+export {
+  DropdownRoot,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  DropdownGroup,
+  DropdownLabel,
+  DropdownSeparator,
+};

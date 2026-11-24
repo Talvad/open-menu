@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Button from './ui/button';
 import { getSession, Session } from '@/lib/auth/session';
 import {
   DropdownItem,
   DropdownMenu,
   DropdownRoot,
+  DropdownSeparator,
   DropdownTrigger,
 } from './ui/dropdown';
 import { cn } from '@/lib/utils';
@@ -22,11 +22,6 @@ export async function AppNavbar() {
         </Link>
       )}
       {session && <DashboardLinks session={session} />}
-      {/* <Link href={'/dashboard'}>
-        <Button className='font-semibold'>
-          {session ? 'Dashboard' : 'Create your shop'}
-        </Button>
-      </Link> */}
     </nav>
   );
 }
@@ -49,8 +44,13 @@ function DashboardLinks({ session }: { session: Session }) {
       </DropdownTrigger>
       <DropdownMenu>
         <DropdownItem href='/dashboard'>Dashboard</DropdownItem>
+        <DropdownSeparator />
         <DropdownItem className='p-0!'>
-          <button className='bg-red-400 w-full'>Logout</button>
+          <form action='/auth/logout' method='post' className='w-full'>
+            <button type='submit' className=' w-full py-2 cursor-pointer'>
+              Sign out
+            </button>
+          </form>
         </DropdownItem>
       </DropdownMenu>
     </DropdownRoot>
@@ -60,7 +60,7 @@ function DashboardLinks({ session }: { session: Session }) {
 export function AppNavbarSkeleton() {
   return (
     <nav>
-      <Button className='font-semibold'>Loading...</Button>
+      <button className='font-semibold'>Loading...</button>
     </nav>
   );
 }

@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${bricolage.variable} bg-background text-foreground min-h-screen antialiased`}
       >
-        {children}
+        <main className='isolate'>{children}</main>
       </body>
     </html>
   );

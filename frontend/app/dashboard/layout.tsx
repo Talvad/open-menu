@@ -1,5 +1,5 @@
 import AppHeader from '@/components/app-header';
-import { getSession } from '@/lib/auth/session';
+import { requireOwner } from '@/lib/auth/session';
 
 const menu = [
   { href: '/dashboard', label: 'Overview' },
@@ -11,7 +11,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
+  const session = await requireOwner();
   return (
     <>
       <AppHeader links={menu}>

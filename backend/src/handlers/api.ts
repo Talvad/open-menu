@@ -1,5 +1,6 @@
 import { assertScope, getAuth } from '../lib/auth';
 import { errorResponse, HttpError, json, type ApiEvent } from '../lib/http';
+import { adminListShops, adminSetStatus, adminAudit } from '../routes/admin';
 import {
   createGroup,
   createItem,
@@ -34,6 +35,9 @@ const routes: Record<string, Handler> = {
   'PUT /shops/{shopId}/items/{itemId}': updateItem,
   'DELETE /shops/{shopId}/items/{itemId}': deleteItem,
   'POST /shops/{shopId}/upload-url': createUploadUrl,
+  'GET /admin/shops': adminListShops,
+  'POST /admin/shops/{shopId}/status': adminSetStatus,
+  'GET /admin/shops/{shopId}/audit': adminAudit,
 };
 
 export const handler = async (event: ApiEvent) => {

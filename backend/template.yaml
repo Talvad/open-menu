@@ -353,6 +353,35 @@ Resources:
               audience:
                 - !Ref UserPoolClient
 
+  # Public, unauthenticated menu read
+  PublicFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Target: es2022
+        Sourcemap: false
+        EntryPoints: [src/handlers/public.ts]
+    Properties:
+      CodeUri: .
+      Handler: public.handler
+      Environment:
+        Variables:
+          MEDIA_BASE_URL: !Sub https://${MediaDistribution.DomainName}
+          TABLE_NAME: !Ref Table
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+      Events:
+        PublicMenu:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /public/shops/{slug}
+            Auth:
+              Authorizer: NONE
+
   # Everything behind the JWT authorizer. One function with an internal router keyed by routeKey.
   ApiFunction:
     Type: AWS::Serverless::Function
@@ -571,6 +600,51 @@ Resources:
                   {
                     Authorizer: CognitoJwt,
                     AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
+        AdminListShops:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: /admin/shops,
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
+                  },
+              },
+          }
+        AdminSetStatus:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/admin/shops/{shopId}/status',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
+                  },
+              },
+          }
+        AdminAudit:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: GET,
+                Path: '/admin/shops/{shopId}/audit',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/admin],
                   },
               },
           }

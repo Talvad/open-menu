@@ -2,7 +2,7 @@
 
 import { api } from '@/lib/api';
 import { shopCreateSchema, shopUpdateSchema } from './schema';
-import { fail, FormState, parse, str } from './util';
+import { bustShopCache, fail, FormState, parse, str } from './util';
 import { requireOwner } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 
@@ -41,4 +41,20 @@ export async function saveShopAction(
     }
   }
   redirect('/dashboard');
+}
+
+/** A rejected shop goes back to the admin queue. */
+export async function resubmitShopAction(
+  _prev: FormState,
+  fd: FormData,
+): Promise<FormState> {
+  await requireOwner();
+  const shopId = str(fd, 'shopId');
+  try {
+    await api(`/shops/${shopId}/submit`, { method: 'POST' });
+    await bustShopCache(shopId);
+    return { message: 'Submitted for review' };
+  } catch (e) {
+    return fail(e);
+  }
 }

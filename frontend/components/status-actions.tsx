@@ -1,49 +1,55 @@
-// import { setStatusAction } from '@/actions/admin';
-// import { ActionForm } from './ActionForm';
-// import { ui } from './ui';
+'use client';
+import { setStatusAction } from '@/actions/admin';
 import { Shop } from '@/lib/types';
+import { useActionState } from 'react';
+import Button from './ui/button';
+import Input from './ui/input';
+import { Field } from './ui/field';
 
 /** Admin controls: which transitions are offered depends on the current status. */
 export function StatusActions({ shop }: { shop: Shop }) {
+  const [state, formAction, isPending] = useActionState(
+    setStatusAction,
+    undefined,
+  );
   const s = shop.status;
-  return <div>Actions here</div>;
+
   return (
     <div className='space-y-4'>
       {(s === 'PENDING' || s === 'REJECTED' || s === 'SUSPENDED') && (
-        <ActionForm
-          action={setStatusAction}
-          submitLabel={s === 'SUSPENDED' ? 'Reinstate' : 'Approve'}
-        >
+        <form action={formAction}>
           <input type='hidden' name='shopId' value={shop.id} />
           <input type='hidden' name='status' value='APPROVED' />
-        </ActionForm>
+          <Button type='submit' size='xs' variant='outline'>
+            {s === 'SUSPENDED' ? 'Reinstate' : 'Approve'}
+          </Button>
+        </form>
       )}
 
       {(s === 'PENDING' || s === 'APPROVED') && (
-        <ActionForm
-          action={setStatusAction}
-          submitLabel={s === 'PENDING' ? 'Reject' : 'Suspend'}
-          variant='danger'
-          className='space-y-2'
-        >
+        <form action={formAction}>
           <input type='hidden' name='shopId' value={shop.id} />
           <input
             type='hidden'
             name='status'
             value={s === 'PENDING' ? 'REJECTED' : 'SUSPENDED'}
           />
-          <input
-            name='reason'
-            maxLength={300}
-            required={s === 'PENDING'}
-            placeholder={
-              s === 'PENDING'
-                ? 'Reason shown to the owner (required)'
-                : 'Reason (optional)'
-            }
-            className={ui.input}
-          />
-        </ActionForm>
+          <Field>
+            <Input
+              name='reason'
+              maxLength={300}
+              required={s === 'PENDING'}
+              placeholder={
+                s === 'PENDING'
+                  ? 'Reason shown to the owner (required)'
+                  : 'Reason (optional)'
+              }
+            />
+          </Field>
+          <Button type='submit' size='xs' variant='outline'>
+            {s === 'PENDING' ? 'Reject' : 'Suspend'}
+          </Button>
+        </form>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export default async function AdminShopPage({
     <div className='space-y-8'>
       <Link
         href='/admin'
-        className='text-sm text-stone-500 hover:text-stone-800'
+        className='text-sm text-stone-500 hover:text-stone-800 inline-block'
       >
         ← All shops
       </Link>

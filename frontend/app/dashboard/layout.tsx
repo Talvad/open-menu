@@ -6,6 +6,7 @@ const menu = [
   { href: '/dashboard/menu', label: 'Menu' },
   { href: '/dashboard/settings', label: 'Settings' },
 ];
+export const instant = false;
 export default async function RootLayout({
   children,
 }: {

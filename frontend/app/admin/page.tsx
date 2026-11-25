@@ -3,6 +3,7 @@ import { SHOP_STATUSES, TYPE_LABELS } from '@/lib/constants';
 import { StatusBadge } from '@/components/status-badge';
 import { getAdminShops } from '@/lib/api';
 import { formatDate } from '@/lib/format';
+import { Suspense } from 'react';
 
 const FILTERS = [
   'PENDING',
@@ -10,7 +11,19 @@ const FILTERS = [
   'ALL',
 ] as const;
 
-export default async function AdminHome({
+export default function AdminHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminHome searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function AdminHome({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string }>;

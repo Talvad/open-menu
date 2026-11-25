@@ -5,6 +5,7 @@ const menu = [
   { href: '/admin?status=PENDING', label: 'Approval queue' },
   { href: '/admin?status=ALL', label: 'All shops' },
 ];
+export const instant = false;
 export default async function RootLayout({
   children,
 }: {

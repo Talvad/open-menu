@@ -15,15 +15,15 @@ Parameters:
     Description: Globally unique prefix for the Cognito Hosted UI domain
   CallbackUrls:
     Type: CommaDelimitedList
-    Default: http://localhost:3000/auth/callback
+    Default: http://localhost:3000/auth/callback,https://openmenu-ivory.vercel.app/auth/callback
     Description: Allowed OAuth redirect URIs (your Next.js /auth/callback routes)
   LogoutUrls:
     Type: CommaDelimitedList
-    Default: http://localhost:3000
+    Default: http://localhost:3000,https://openmenu-ivory.vercel.app
     Description: Allowed sign-out redirect URIs (no trailing slash)
   WebOrigins:
     Type: CommaDelimitedList
-    Default: http://localhost:3000
+    Default: http://localhost:3000,https://openmenu-ivory.vercel.app
     Description: Origins allowed to upload images to S3 from the browser (CORS)
   GoogleClientId:
     Type: String

@@ -148,6 +148,6 @@ export async function createUploadUrlAction(
     });
     return { ticket };
   } catch (e) {
-    return { error: fail(e).error ?? '' };
+    return { error: 'Error occured while uploading' };
   }
 }

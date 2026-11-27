@@ -3,7 +3,7 @@ import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import { slugSchema } from '../lib/schemas';
 import { ddb, keys, listByPrefix, TABLE, type Rec } from '../lib/db';
 import { errorResponse, json } from '../lib/http';
-import { bySort, toGroup, toItem } from '../lib/mappers';
+import { bySort, mediaUrl, toGroup, toItem } from '../lib/mappers';
 
 /**
  * GET /public/shops/{slug}  (no auth)
@@ -96,6 +96,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
         address: shop.address ?? '',
         currency: shop.currency,
         timeZone: shop.timeZone ?? 'Asia/Kolkata',
+        logoUrl: mediaUrl(shop.logoKey),
       },
       groups: publicGroups,
       ...(Number.isFinite(nextTransitionAt)

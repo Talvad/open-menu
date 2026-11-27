@@ -122,6 +122,13 @@ export const updateShop: Handler = async ({ event, auth }) => {
   const shopId = pathParam(event, 'shopId');
   await requireShop(auth, shopId, { write: true });
   const input = parseBody(event, shopUpdateSchema);
+  if (
+    typeof input.logoKey === 'string' &&
+    input.logoKey &&
+    !input.logoKey.startsWith(`shops/${shopId}/`)
+  ) {
+    throw new HttpError(400, 'Invalid shop logo');
+  }
 
   const res = await ddb.send(
     new UpdateCommand({

@@ -18,6 +18,8 @@ export function toShop(r: Rec): Shop {
     address: r.address ?? '',
     currency: r.currency,
     timeZone: r.timeZone ?? 'Asia/Kolkata',
+    logoKey: r.logoKey ?? '',
+    logoUrl: mediaUrl(r.logoKey),
     status: r.status,
     statusReason: r.statusReason ?? '',
     ownerEmail: r.ownerEmail ?? '',

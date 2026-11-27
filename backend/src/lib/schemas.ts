@@ -60,7 +60,12 @@ const shopFields = {
 };
 
 export const shopCreateSchema = z.object({ ...shopFields, slug: slugSchema });
-export const shopUpdateSchema = z.object(shopFields).partial();
+export const shopUpdateSchema = z
+  .object({
+    ...shopFields,
+    logoKey: z.string().max(200).nullable().optional(),
+  })
+  .partial();
 
 export const statusSchema = z.object({
   status: z.enum(SHOP_STATUSES),

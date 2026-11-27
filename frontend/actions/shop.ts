@@ -15,9 +15,14 @@ export async function saveShopAction(
   if (shopId) {
     const parsed = parse(shopUpdateSchema, formData);
     if (!parsed.ok) return parsed.state;
-    const body = parsed.data;
+    const body = {
+      ...parsed.data,
+      logoKey:
+        parsed.data.logoKey === '' ? null : parsed.data.logoKey,
+    };
     try {
       await api(`/shops/${shopId}`, { method: 'PUT', body });
+      await bustShopCache(shopId);
     } catch (error) {
       return fail(error);
     }

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoney } from '@/lib/format';
+import { ShopLogo } from '@/components/shop-logo';
 import type { PriceOption, PublicItem, PublicMenu } from '@/lib/types';
 
 type CartLine = {
@@ -233,12 +234,22 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
       <header className='relative overflow-hidden bg-forest px-4 py-9 text-paper sm:py-12'>
         <div aria-hidden='true' className='absolute -right-10 -top-20 h-56 w-56 rounded-full border-[24px] border-white/[0.06]' />
         <div className='relative mx-auto max-w-3xl'>
-          <p className='mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#efb08c]'>
-            Today at
-          </p>
-          <h1 className='font-bricolage text-4xl font-bold tracking-[-0.06em] sm:text-6xl'>
-            {shop.name}
-          </h1>
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
+            <ShopLogo
+              name={shop.name}
+              logoUrl={shop.logoUrl}
+              size='lg'
+              className='border-white/20'
+            />
+            <div>
+              <p className='mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#efb08c]'>
+                Today at
+              </p>
+              <h1 className='font-bricolage text-4xl font-bold tracking-[-0.06em] sm:text-6xl'>
+                {shop.name}
+              </h1>
+            </div>
+          </div>
           {shop.description && (
             <p className='mt-3 max-w-xl text-sm leading-6 text-white/70 sm:text-base'>
               {shop.description}

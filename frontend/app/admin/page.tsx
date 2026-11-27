@@ -4,6 +4,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { getAdminShops } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { Suspense } from 'react';
+import { ShopLogo } from '@/components/shop-logo';
 
 const FILTERS = [
   'PENDING',
@@ -91,9 +92,11 @@ async function AdminHome({
                 className='group flex flex-wrap items-center gap-4 px-4 py-4 transition-colors hover:bg-white sm:px-6'
               >
                 <div className='flex min-w-0 flex-1 items-start gap-4'>
-                  <span className='mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#eee8dd] font-bricolage text-sm font-bold text-forest'>
-                    {shop.name.charAt(0)}
-                  </span>
+                  <ShopLogo
+                    name={shop.name}
+                    logoUrl={shop.logoUrl}
+                    size='sm'
+                  />
                   <div className='min-w-0 flex-1'>
                     <p className='font-bricolage text-lg font-bold tracking-[-0.03em] text-forest'>
                       {shop.name}

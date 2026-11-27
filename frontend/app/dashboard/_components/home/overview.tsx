@@ -6,6 +6,7 @@ import { Shop } from '@/lib/types';
 import { StatusBadge } from '@/components/status-badge';
 import { ResubmitButton } from './resubmit-form';
 import { MenuShareKit } from './menu-share-kit';
+import { ShopLogo } from '@/components/shop-logo';
 
 type Props = { shop: Shop };
 
@@ -23,6 +24,12 @@ export default function OwnerOverview({ shop }: Props) {
           Your shop, your way
         </p>
         <div className='mt-3 flex flex-wrap items-center gap-3'>
+          <ShopLogo
+            name={shop.name}
+            logoUrl={shop.logoUrl}
+            size='lg'
+            className='border-white/20'
+          />
           <h1 className='font-bricolage text-3xl font-bold tracking-[-0.06em] sm:text-5xl'>
             {shop.name}
           </h1>

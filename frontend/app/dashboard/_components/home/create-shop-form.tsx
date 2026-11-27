@@ -13,7 +13,9 @@ import Select from '@/components/ui/select';
 import Textarea from '@/components/ui/textarea';
 import { CURRENCIES, SHOP_TYPES } from '@/lib/constants';
 import { Shop } from '@/lib/types';
-import { useActionState } from 'react';
+import { ShopLogo } from '@/components/shop-logo';
+import { useActionState, useState } from 'react';
+import { ImageUpload } from '../menu/image-upload';
 
 type Props = { shop?: Shop | null };
 
@@ -22,6 +24,7 @@ export default function CreateShopForm({ shop }: Props) {
     saveShopAction,
     undefined,
   );
+  const [logoUploading, setLogoUploading] = useState(false);
   return (
     <form
       action={formAction}
@@ -29,6 +32,35 @@ export default function CreateShopForm({ shop }: Props) {
     >
       <FormError state={state} />
       {shop && <input type='hidden' name='shopId' value={shop.id} />}
+      {shop && (
+        <section className='space-y-3 rounded-xl border border-[#e6ddd0] bg-background p-4'>
+          <div className='flex items-center gap-3'>
+            {!shop.logoUrl && (
+              <ShopLogo
+                name={shop.name}
+                logoUrl={shop.logoUrl}
+                size='md'
+              />
+            )}
+            <p className='text-sm leading-6 text-[#625f55]'>
+              Add a recognizable logo to your public menu and shop profile.
+              Without one, we’ll show initials from your shop name.
+            </p>
+          </div>
+          <ImageUpload
+            shopId={shop.id}
+            initialKey={shop.logoKey}
+            initialUrl={shop.logoUrl}
+            fieldName='logoKey'
+            title='Shop logo'
+            emptyMessage='Choose a logo from your device'
+            previewAlt={`${shop.name} logo preview`}
+            preserveTransparency
+            fit='contain'
+            onBusyChange={setLogoUploading}
+          />
+        </section>
+      )}
       <Field>
         <FieldLabel htmlFor='name'>Shop name</FieldLabel>
         <Input
@@ -175,8 +207,16 @@ export default function CreateShopForm({ shop }: Props) {
       </Field>
 
       <Field>
-        <Button type='submit' disabled={isPending}>
-          {isPending ? 'Setting up your shop…' : shop ? 'Save shop details' : 'Create my shop'}
+        <Button type='submit' disabled={isPending || logoUploading}>
+          {logoUploading
+            ? 'Uploading shop logo…'
+            : isPending
+              ? shop
+                ? 'Saving shop details…'
+                : 'Setting up your shop…'
+              : shop
+                ? 'Save shop details'
+                : 'Create my shop'}
         </Button>
       </Field>
     </form>

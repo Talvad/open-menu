@@ -12,6 +12,8 @@ export interface Shop {
   address: string;
   currency: Currency;
   timeZone: string;
+  logoKey: string;
+  logoUrl: string | null;
   status: ShopStatus;
   statusReason: string;
   ownerEmail: string;
@@ -125,6 +127,7 @@ export interface PublicMenu {
     address: string;
     currency: Currency;
     timeZone: string;
+    logoUrl: string | null;
   };
   groups: PublicGroup[];
 }

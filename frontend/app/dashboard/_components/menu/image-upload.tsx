@@ -7,7 +7,10 @@ import { createUploadUrlAction } from '@/actions/menu';
 const MAX_DIMENSION = 900;
 
 /** Downscale in the browser so phones don't upload 5 MB photos and customers don't download them. */
-async function toJpeg(file: File): Promise<Blob> {
+async function toImage(
+  file: File,
+  preserveTransparency: boolean,
+): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(
     1,
@@ -18,15 +21,18 @@ async function toJpeg(file: File): Promise<Blob> {
   canvas.height = Math.round(bitmap.height * scale);
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not process the image');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const contentType = preserveTransparency ? 'image/png' : 'image/jpeg';
+  if (!preserveTransparency) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   return new Promise((resolve, reject) =>
     canvas.toBlob(
       (b) =>
         b ? resolve(b) : reject(new Error('Could not process the image')),
-      'image/jpeg',
-      0.85,
+      contentType,
+      preserveTransparency ? undefined : 0.85,
     ),
   );
 }
@@ -35,16 +41,30 @@ interface Props {
   shopId: string;
   initialKey?: string;
   initialUrl?: string | null;
+  fieldName?: string;
+  title?: string;
+  emptyMessage?: string;
+  previewAlt?: string;
+  preserveTransparency?: boolean;
+  fit?: 'cover' | 'contain';
+  onBusyChange?: (busy: boolean) => void;
 }
 
 /**
- * Browser -> S3 direct upload using a presigned POST. Renders a hidden `imageKey` input
- * that the surrounding ActionForm submits together with the rest of the item.
+ * Browser -> S3 direct upload using a presigned POST. Renders the hidden key field
+ * named by `fieldName` for the surrounding form to submit.
  */
 export function ImageUpload({
   shopId,
   initialKey = '',
   initialUrl = null,
+  fieldName = 'imageKey',
+  title = 'Menu photo',
+  emptyMessage = 'Give it a little visual love',
+  previewAlt = 'Selected menu item',
+  preserveTransparency = false,
+  fit = 'cover',
+  onBusyChange,
 }: Props) {
   const [key, setKey] = useState(initialKey);
   const [preview, setPreview] = useState<string | null>(initialUrl);
@@ -64,12 +84,13 @@ export function ImageUpload({
       return setError('Please choose an image file');
 
     setBusy(true);
+    onBusyChange?.(true);
     setError('');
     try {
-      const blob = await toJpeg(file);
+      const blob = await toImage(file, preserveTransparency);
       const { ticket, error: ticketError } = await createUploadUrlAction(
         shopId,
-        'image/jpeg',
+        blob.type,
       );
       if (!ticket) throw new Error(ticketError ?? 'Could not start the upload');
 
@@ -85,22 +106,25 @@ export function ImageUpload({
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setBusy(false);
+      onBusyChange?.(false);
     }
   }
 
   return (
     <div className='space-y-2'>
-      <input type='hidden' name='imageKey' value={key} readOnly />
+      <input type='hidden' name={fieldName} value={key} readOnly />
       <p className='text-xs font-semibold uppercase tracking-[0.12em] text-[#615e53]'>
-        Menu photo
+        {title}
       </p>
       <div className='flex flex-wrap items-center gap-3 rounded-2xl border border-[#e6ddd0] bg-paper p-3 shadow-sm'>
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={preview}
-            alt='Selected menu item'
-            className='h-16 w-16 shrink-0 rounded-xl border border-[#e6ddd0] object-cover'
+            alt={previewAlt}
+            className={`h-16 w-16 shrink-0 rounded-xl border border-[#e6ddd0] ${
+              fit === 'contain' ? 'object-contain p-1' : 'object-cover'
+            }`}
           />
         ) : (
           <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-dashed border-[#d9d0c3] bg-[#f7f2e9] text-[#898477]'>
@@ -109,7 +133,7 @@ export function ImageUpload({
         )}
         <div className='min-w-28 flex-1'>
           <p className='text-sm font-semibold text-forest'>
-            {preview ? 'Looking good' : 'Give it a little visual love'}
+            {preview ? 'Looking good' : emptyMessage}
           </p>
           <p
             className='mt-0.5 text-xs text-[#716e63]'
@@ -137,7 +161,11 @@ export function ImageUpload({
             className='sr-only'
             onChange={onChange}
             disabled={busy}
-            aria-label={preview ? 'Change item photo' : 'Upload item photo'}
+            aria-label={
+              preview
+                ? `Change ${title.toLowerCase()}`
+                : `Upload ${title.toLowerCase()}`
+            }
             aria-describedby={error ? 'image-upload-error' : undefined}
             aria-invalid={Boolean(error)}
           />
@@ -145,7 +173,7 @@ export function ImageUpload({
         {preview && !busy && (
           <button
             type='button'
-            aria-label='Remove item photo'
+            aria-label={`Remove ${title.toLowerCase()}`}
             className='inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9d0c3] bg-paper text-[#716e63] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
             onClick={() => {
               setKey('');

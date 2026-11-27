@@ -8,6 +8,7 @@ import { TYPE_LABELS } from '@/lib/constants';
 import MenuManager from '@/app/dashboard/_components/menu/menu-manager';
 import { StatusActions } from '@/components/status-actions';
 import { Suspense } from 'react';
+import { ShopLogo } from '@/components/shop-logo';
 
 export default function AdminShopPage({
   params,
@@ -52,6 +53,12 @@ async function AdminShopContent({
             Shop profile
           </p>
           <div className='mt-2 flex flex-wrap items-center gap-3'>
+            <ShopLogo
+              name={shop.name}
+              logoUrl={shop.logoUrl}
+              size='lg'
+              className='border-white/20'
+            />
             <h1 className='font-bricolage text-3xl font-bold tracking-[-0.05em] sm:text-4xl'>
               {shop.name}
             </h1>

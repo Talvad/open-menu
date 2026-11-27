@@ -1,18 +1,11 @@
 'use client';
 import { saveGroupAction } from '@/actions/menu';
 import Button from '@/components/ui/button';
-import { Field, FieldLabel, FormError } from '@/components/ui/field';
-import Input from '@/components/ui/input';
-import { MenuGroup } from '@/lib/types';
+import { FormError } from '@/components/ui/field';
 import { useActionState } from 'react';
 import GroupFields from './group-fields';
 
-type Props = {
-  shopId: string;
-  group?: MenuGroup;
-};
-
-export default function CreateGroupForm({ shopId, group }: Props) {
+export default function CreateGroupForm({ shopId }: { shopId: string }) {
   const [state, formAction, isPending] = useActionState(
     saveGroupAction,
     undefined,

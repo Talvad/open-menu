@@ -16,7 +16,7 @@ export default function EditGroupForm({ shopId, group }: Props) {
     saveGroupAction,
     undefined,
   );
-  const [deletestate, deleteFormAction, isDeletePending] = useActionState(
+  const [, deleteFormAction, isDeletePending] = useActionState(
     deleteGroupAction,
     undefined,
   );

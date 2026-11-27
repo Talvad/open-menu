@@ -20,7 +20,6 @@ export default function ItemRow({
     <li className='py-4 first:pt-0'>
       <div className='flex items-start gap-3'>
         {item.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <div className='relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[#e6ddd0]'>
             <Image
               src={item.imageUrl}

@@ -4,7 +4,7 @@ import { Shop } from '@/lib/types';
 import { useActionState } from 'react';
 import Button from './ui/button';
 import Input from './ui/input';
-import { Field } from './ui/field';
+import { Field, FormError } from './ui/field';
 
 /** Admin controls: which transitions are offered depends on the current status. */
 export function StatusActions({ shop }: { shop: Shop }) {
@@ -16,11 +16,12 @@ export function StatusActions({ shop }: { shop: Shop }) {
 
   return (
     <div className='space-y-4'>
+      <FormError state={state} />
       {(s === 'PENDING' || s === 'REJECTED' || s === 'SUSPENDED') && (
         <form action={formAction}>
           <input type='hidden' name='shopId' value={shop.id} />
           <input type='hidden' name='status' value='APPROVED' />
-          <Button type='submit' size='xs' variant='outline'>
+          <Button type='submit' size='xs' variant='outline' disabled={isPending}>
             {s === 'SUSPENDED' ? 'Restore shop' : 'Approve shop'}
           </Button>
         </form>
@@ -46,7 +47,7 @@ export function StatusActions({ shop }: { shop: Shop }) {
               }
             />
           </Field>
-          <Button type='submit' size='xs' variant='outline'>
+          <Button type='submit' size='xs' variant='outline' disabled={isPending}>
             {s === 'PENDING' ? 'Decline shop' : 'Pause shop'}
           </Button>
         </form>

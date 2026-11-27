@@ -1,7 +1,6 @@
 'use client';
 
-import { deleteItemAction, toggleItemAction } from '@/actions/menu';
-import Button from '@/components/ui/button';
+import { deleteItemAction } from '@/actions/menu';
 import {
   DropdownItem,
   DropdownMenu,
@@ -16,7 +15,7 @@ type Props = {
 };
 
 export default function DeleteItemForm({ shopId, itemId }: Props) {
-  const [state, formAction, isPending] = useActionState(
+  const [, formAction, isPending] = useActionState(
     deleteItemAction,
     undefined,
   );

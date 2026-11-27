@@ -37,6 +37,20 @@ const shopFields = {
     .optional(),
   address: text(200).optional(),
   currency: z.enum(CURRENCIES),
+  timeZone: z
+    .string()
+    .trim()
+    .min(1)
+    .max(64)
+    .default('Asia/Kolkata')
+    .refine((value) => {
+      try {
+        new Intl.DateTimeFormat('en', { timeZone: value });
+        return true;
+      } catch {
+        return false;
+      }
+    }, 'Enter a valid IANA time zone, such as Asia/Kolkata'),
 }
 
 export const shopCreateSchema = z.object({ ...shopFields, slug: slugSchema })
@@ -78,6 +92,36 @@ const attributesSchema = z
 
 const priceSchema = z.number().min(0, 'Price cannot be negative').max(10_000_000)
 
+const priceOptionSchema = z.object({
+  name: z.string().trim().min(1).max(40),
+  priceAdjustment: z.number().min(0).max(1_000_000),
+});
+
+const variantSchema = z.object({
+  name: z.string().trim().min(1).max(40),
+  options: z.array(priceOptionSchema).min(1).max(10),
+});
+
+const scheduleSchema = z
+  .object({
+    startsAt: z.string().datetime(),
+    endsAt: z.string().datetime(),
+    availability: z.boolean().optional(),
+    label: z.string().trim().max(60).optional(),
+    specialPrice: priceSchema.optional(),
+  })
+  .refine((schedule) => Date.parse(schedule.endsAt) > Date.parse(schedule.startsAt), {
+    message: 'Schedule end must be after its start',
+    path: ['endsAt'],
+  })
+  .refine(
+    (schedule) =>
+      schedule.availability !== undefined ||
+      schedule.specialPrice !== undefined ||
+      Boolean(schedule.label),
+    { message: 'Set availability, a special price, or a label' },
+  );
+
 export const itemCreateSchema = z.object({
   groupId: z.string().min(1).max(64),
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -89,7 +133,18 @@ export const itemCreateSchema = z.object({
   sortOrder: z.number().int().min(0).max(100000).default(0),
   tags: tagsSchema.default([]),
   attributes: attributesSchema.default({}),
-})
+  variant: variantSchema.optional(),
+  extras: z.array(priceOptionSchema).max(20).default([]),
+  schedule: scheduleSchema.nullable().optional(),
+}).refine(
+  (item) =>
+    item.schedule?.specialPrice === undefined ||
+    item.schedule.specialPrice <= item.price,
+  {
+    message: 'Special price cannot exceed the regular item price',
+    path: ['schedule', 'specialPrice'],
+  },
+)
 
 /** Separate from itemCreateSchema on purpose: an update must never re-apply defaults. */
 export const itemUpdateSchema = z.object({
@@ -103,7 +158,19 @@ export const itemUpdateSchema = z.object({
   sortOrder: z.number().int().min(0).max(100000).optional(),
   tags: tagsSchema.optional(),
   attributes: attributesSchema.optional(),
-})
+  variant: variantSchema.nullable().optional(),
+  extras: z.array(priceOptionSchema).max(20).optional(),
+  schedule: scheduleSchema.nullable().optional(),
+}).refine(
+  (item) =>
+    item.schedule?.specialPrice === undefined ||
+    item.price === undefined ||
+    item.schedule.specialPrice <= item.price,
+  {
+    message: 'Special price cannot exceed the regular item price',
+    path: ['schedule', 'specialPrice'],
+  },
+)
 
 /* ------------------------------------------------------------------ */
 /* Uploads                                                             */

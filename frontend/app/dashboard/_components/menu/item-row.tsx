@@ -8,11 +8,13 @@ import EditItemForm from './edit-item-form';
 export default function ItemRow({
   item,
   shopId,
+  shopTimeZone,
   groups,
   price,
 }: {
   item: MenuItem;
   shopId: string;
+  shopTimeZone: string;
   groups: MenuGroup[];
   price: string;
 }) {
@@ -70,7 +72,12 @@ export default function ItemRow({
         <DeleteItemForm shopId={shopId} itemId={item.id} />
       </div>
 
-      <EditItemForm shopId={shopId} item={item} groups={groups} />
+      <EditItemForm
+        shopId={shopId}
+        item={item}
+        groups={groups}
+        shopTimeZone={shopTimeZone}
+      />
     </li>
   );
 }

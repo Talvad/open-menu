@@ -10,9 +10,10 @@ type Props = {
   shopId: string;
   item: MenuItem;
   groups: MenuGroup[];
+  shopTimeZone: string;
 };
 
-export default function EditItemForm({ shopId, item, groups }: Props) {
+export default function EditItemForm({ shopId, item, groups, shopTimeZone }: Props) {
   const [state, formAction, isPending] = useActionState(
     saveItemAction,
     undefined,
@@ -33,6 +34,7 @@ export default function EditItemForm({ shopId, item, groups }: Props) {
           shopId={shopId}
           groups={groups}
           item={item}
+          shopTimeZone={shopTimeZone}
           defaultGroupId={item.groupId}
         />
         <Button type='submit' disabled={isPending} size='sm'>

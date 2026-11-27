@@ -33,6 +33,7 @@ export default function CreateItemForm({ shop, group, groups }: Props) {
           shopId={shop.id}
           groups={groups}
           shopType={shop.type}
+          shopTimeZone={shop.timeZone}
           defaultGroupId={group.id}
         />
         <Button type='submit' disabled={isPending} size='sm'>

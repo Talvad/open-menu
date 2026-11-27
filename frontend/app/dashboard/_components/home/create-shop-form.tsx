@@ -159,6 +159,22 @@ export default function CreateShopForm({ shop }: Props) {
       </Field>
 
       <Field>
+        <FieldLabel htmlFor='timeZone'>Shop time zone</FieldLabel>
+        <Input
+          id='timeZone'
+          name='timeZone'
+          defaultValue={shop?.timeZone ?? state?.values?.timeZone ?? 'Asia/Kolkata'}
+          required
+          placeholder='Asia/Kolkata'
+        />
+        <FieldDescription>
+          Use an IANA time zone such as Asia/Kolkata or America/New_York.
+          Scheduled menu changes use this time zone.
+        </FieldDescription>
+        <FieldError errors={state?.fieldErrors?.timeZone || []} />
+      </Field>
+
+      <Field>
         <Button type='submit' disabled={isPending}>
           {isPending ? 'Setting up your shop…' : shop ? 'Save shop details' : 'Create my shop'}
         </Button>

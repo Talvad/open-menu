@@ -40,6 +40,7 @@ export default function AllGroupForm({ shop, groups = [], items = [] }: Props) {
                   key={item.id}
                   item={item}
                   shopId={shop.id}
+                  shopTimeZone={shop.timeZone}
                   groups={groups}
                   price={money(item.price)}
                 />

@@ -3,7 +3,82 @@
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoney } from '@/lib/format';
-import { PublicItem, PublicMenu } from '@/lib/types';
+import type { PriceOption, PublicItem, PublicMenu } from '@/lib/types';
+
+type CartLine = {
+  key: string;
+  itemId: string;
+  qty: number;
+  variant?: string;
+  extras: string[];
+};
+
+function cartKey(itemId: string, variant?: string, extras: string[] = []) {
+  return JSON.stringify([itemId, variant ?? '', [...extras].sort()]);
+}
+
+function optionPrice(options: PriceOption[], selected: string[]) {
+  return options
+    .filter((option) => selected.includes(option.name))
+    .reduce((sum, option) => sum + option.priceAdjustment, 0);
+}
+
+function linePrice(
+  item: PublicItem,
+  variant: string | undefined,
+  extras: string[],
+) {
+  const variantAdjustment = item.variant?.options.find(
+    (option) => option.name === variant,
+  )?.priceAdjustment ?? 0;
+  return item.price + variantAdjustment + optionPrice(item.extras, extras);
+}
+
+function restoreCart(raw: unknown, lookup: Map<string, PublicItem>): CartLine[] {
+  const entries: unknown[] = Array.isArray(raw)
+    ? raw
+    : raw && typeof raw === 'object'
+      ? Object.entries(raw).map(([itemId, qty]) => ({ itemId, qty }))
+      : [];
+  const restored = new Map<string, CartLine>();
+
+  for (const entry of entries) {
+    if (!entry || typeof entry !== 'object') continue;
+    const stored = entry as Record<string, unknown>;
+    const itemId =
+      typeof stored.itemId === 'string'
+        ? stored.itemId
+        : typeof stored.id === 'string'
+          ? stored.id
+          : '';
+    const item = lookup.get(itemId);
+    if (!item?.available || typeof stored.qty !== 'number') continue;
+    if (!Number.isInteger(stored.qty) || stored.qty <= 0) continue;
+
+    const variant =
+      typeof stored.variant === 'string' &&
+      item.variant?.options.some((option) => option.name === stored.variant)
+        ? stored.variant
+        : item.variant?.options[0]?.name;
+    const extras = Array.isArray(stored.extras)
+      ? stored.extras.filter(
+          (name): name is string =>
+            typeof name === 'string' &&
+            item.extras.some((extra) => extra.name === name),
+        )
+      : [];
+    const key = cartKey(itemId, variant, extras);
+    const previous = restored.get(key);
+    restored.set(key, {
+      key,
+      itemId,
+      qty: Math.min(99, (previous?.qty ?? 0) + stored.qty),
+      ...(variant ? { variant } : {}),
+      extras,
+    });
+  }
+  return [...restored.values()];
+}
 
 /**
  * Customer-facing menu + calculator. All cart logic is client-side: no backend calls, no cost per tap.
@@ -14,11 +89,17 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
   const storageKey = `om-cart:${shop.slug}`;
   const money = (n: number) => formatMoney(n, shop.currency);
 
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cart, setCart] = useState<CartLine[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [copied, setCopied] = useState(false);
+  const [selectedVariants, setSelectedVariants] = useState<
+    Record<string, string>
+  >({});
+  const [selectedExtras, setSelectedExtras] = useState<Record<string, string[]>>(
+    {},
+  );
 
   const lookup = useMemo(() => {
     const map = new Map<string, PublicItem>();
@@ -29,27 +110,30 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
   // Restore the cart, dropping items that were removed or went out of stock since.
   useEffect(() => {
     let cancelled = false;
-    const clean: Record<string, number> = {};
-
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
-        const saved = JSON.parse(raw) as Record<string, number>;
-        for (const [id, qty] of Object.entries(saved)) {
-          const item = lookup.get(id);
-          if (item?.available && Number.isInteger(qty) && qty > 0)
-            clean[id] = Math.min(qty, 99);
-        }
+        const saved: unknown = JSON.parse(raw);
+        const clean = restoreCart(saved, lookup);
+        queueMicrotask(() => {
+          if (cancelled) return;
+          setCart(clean);
+          setLoaded(true);
+        });
+      } else {
+        queueMicrotask(() => {
+          if (cancelled) return;
+          setCart([]);
+          setLoaded(true);
+        });
       }
     } catch {
-      /* storage unavailable: start with an empty cart */
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setCart([]);
+        setLoaded(true);
+      });
     }
-
-    queueMicrotask(() => {
-      if (cancelled) return;
-      setCart(clean);
-      setLoaded(true);
-    });
 
     return () => {
       cancelled = true;
@@ -65,25 +149,50 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
     }
   }, [cart, loaded, storageKey]);
 
-  const lines = Object.entries(cart)
-    .map(([id, qty]) => ({ item: lookup.get(id), qty }))
-    .filter((l): l is { item: PublicItem; qty: number } => Boolean(l.item));
-  const count = lines.reduce((n, l) => n + l.qty, 0);
+  const lines = cart
+    .map((line) => {
+      const item = lookup.get(line.itemId);
+      return item
+        ? { ...line, item, price: linePrice(item, line.variant, line.extras) }
+        : null;
+    })
+    .filter(
+      (
+        line,
+      ): line is CartLine & { item: PublicItem; price: number } =>
+        line !== null,
+    );
+  const count = lines.reduce((sum, line) => sum + line.qty, 0);
   // Sum in minor units to avoid floating point drift (0.1 + 0.2).
   const totalCents = lines.reduce(
-    (sum, l) => sum + Math.round(l.item.price * 100) * l.qty,
+    (sum, line) => sum + Math.round(line.price * 100) * line.qty,
     0,
   );
   const total = totalCents / 100;
 
-  const change = (id: string, delta: number) =>
-    setCart((c) => {
-      const next = Math.max(0, Math.min(99, (c[id] ?? 0) + delta));
-      const copy = { ...c };
-      if (next === 0) delete copy[id];
-      else copy[id] = next;
-      return copy;
+  const change = (
+    item: PublicItem,
+    variant: string | undefined,
+    extras: string[],
+    delta: number,
+  ) => {
+    const key = cartKey(item.id, variant, extras);
+    setCart((current) => {
+      const existing = current.find((line) => line.key === key);
+      const qty = Math.max(0, Math.min(99, (existing?.qty ?? 0) + delta));
+      if (qty === 0) return current.filter((line) => line.key !== key);
+      const next: CartLine = {
+        key,
+        itemId: item.id,
+        qty,
+        ...(variant ? { variant } : {}),
+        extras,
+      };
+      return existing
+        ? current.map((line) => (line.key === key ? next : line))
+        : [...current, next];
     });
+  };
 
   const q = query.trim().toLowerCase();
   const visibleGroups = groups
@@ -101,9 +210,11 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
 
   const orderText = [
     `Order from ${shop.name}`,
-    ...lines.map(
-      (l) => `${l.qty} x ${l.item.name} - ${money(l.item.price * l.qty)}`,
-    ),
+    ...lines.map((line) => {
+      const selections = [line.variant, ...line.extras].filter(Boolean);
+      const label = selections.length ? ` (${selections.join(', ')})` : '';
+      return `${line.qty} x ${line.item.name}${label} - ${money(line.price * line.qty)}`;
+    }),
     `Total: ${money(total)}`,
   ].join('\n');
 
@@ -200,7 +311,16 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
             </div>
             <ul className='space-y-3'>
               {g.items.map((item) => {
-                const qty = cart[item.id] ?? 0;
+                const variant =
+                  selectedVariants[item.id] ?? item.variant?.options[0]?.name;
+                const extras = selectedExtras[item.id] ?? [];
+                const key = cartKey(item.id, variant, extras);
+                const qty = cart.find((line) => line.key === key)?.qty ?? 0;
+                const price = linePrice(item, variant, extras);
+                const regularPrice =
+                  item.originalPrice === undefined
+                    ? undefined
+                    : item.originalPrice + (price - item.price);
                 return (
                   <li
                     key={item.id}
@@ -248,9 +368,81 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                           ))}
                         </div>
                       )}
+                      {item.specialLabel && (
+                        <p className='mt-2 text-xs font-semibold text-primary'>
+                          {item.specialLabel}
+                        </p>
+                      )}
+                      {item.variant && (
+                        <label className='mt-3 flex max-w-xs flex-col gap-1 text-xs font-semibold text-forest'>
+                          {item.variant.name}
+                          <select
+                            value={variant}
+                            onChange={(event) =>
+                              setSelectedVariants((current) => ({
+                                ...current,
+                                [item.id]: event.target.value,
+                              }))
+                            }
+                            className='rounded-lg border border-[#d9d0c3] bg-paper px-3 py-2 text-sm font-normal'
+                          >
+                            {item.variant.options.map((option) => (
+                              <option key={option.name} value={option.name}>
+                                {option.name}
+                                {option.priceAdjustment
+                                  ? ` (+${money(option.priceAdjustment)})`
+                                  : ''}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      {item.extras.length > 0 && (
+                        <fieldset className='mt-3'>
+                          <legend className='text-xs font-semibold text-forest'>
+                            Extras
+                          </legend>
+                          <div className='mt-1 flex flex-wrap gap-x-3 gap-y-1'>
+                            {item.extras.map((extra) => (
+                              <label
+                                key={extra.name}
+                                className='inline-flex items-center gap-1.5 text-xs text-[#626258]'
+                              >
+                                <input
+                                  type='checkbox'
+                                  checked={extras.includes(extra.name)}
+                                  onChange={(event) =>
+                                    setSelectedExtras((current) => {
+                                      const selected = current[item.id] ?? [];
+                                      return {
+                                        ...current,
+                                        [item.id]: event.target.checked
+                                          ? [...selected, extra.name]
+                                          : selected.filter(
+                                              (name) => name !== extra.name,
+                                            ),
+                                      };
+                                    })
+                                  }
+                                  className='accent-primary'
+                                />
+                                {extra.name}
+                                {extra.priceAdjustment
+                                  ? ` (+${money(extra.priceAdjustment)})`
+                                  : ''}
+                              </label>
+                            ))}
+                          </div>
+                        </fieldset>
+                      )}
                       <div className='mt-auto flex items-center justify-between pt-2'>
                         <span className='font-semibold tabular-nums text-forest'>
-                          {money(item.price)}
+                          {regularPrice !== undefined && (
+                            <span className='mr-2 text-sm font-normal text-[#898477] line-through'>
+                              {money(regularPrice)}
+                            </span>
+                          )}
+                          {money(price)}
                         </span>
                         {!item.available ? (
                           <span className='rounded-full bg-[#eee8dd] px-3 py-1.5 text-xs font-semibold text-[#5f5c52]'>
@@ -259,7 +451,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                         ) : qty === 0 ? (
                           <button
                             type='button'
-                            onClick={() => change(item.id, 1)}
+                            onClick={() => change(item, variant, extras, 1)}
                             className='rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a43d30]'
                           >
                             Add
@@ -268,7 +460,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                           <div className='flex items-center gap-2'>
                             <button
                               type='button'
-                              onClick={() => change(item.id, -1)}
+                              onClick={() => change(item, variant, extras, -1)}
                               aria-label={`Remove one ${item.name}`}
                               className='h-9 w-9 rounded-full border border-[#d9d0c3] bg-paper text-lg leading-none text-forest hover:bg-[#eee8dd]'
                             >
@@ -279,7 +471,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                             </span>
                             <button
                               type='button'
-                              onClick={() => change(item.id, 1)}
+                              onClick={() => change(item, variant, extras, 1)}
                               aria-label={`Add one more ${item.name}`}
                               className='h-9 w-9 rounded-full bg-primary text-lg leading-none text-white hover:bg-[#a43d30]'
                             >
@@ -345,37 +537,48 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
               <p className='mt-6 text-sm text-[#716e63]'>Nothing selected yet.</p>
             ) : (
               <ul className='mt-4 divide-y divide-[#eee7dc]'>
-                {lines.map(({ item, qty }) => (
-                  <li key={item.id} className='flex items-center gap-3 py-2'>
+                {lines.map((line) => (
+                  <li key={line.key} className='flex items-center gap-3 py-2'>
                     <div className='min-w-0 flex-1'>
-                      <p className='truncate font-medium'>{item.name}</p>
+                      <p className='truncate font-medium'>{line.item.name}</p>
+                      {(line.variant || line.extras.length > 0) && (
+                        <p className='truncate text-xs text-[#716e63]'>
+                          {[line.variant, ...line.extras]
+                            .filter(Boolean)
+                            .join(', ')}
+                        </p>
+                      )}
                       <p className='text-xs text-[#716e63]'>
-                        {money(item.price)} × {qty}
+                        {money(line.price)} × {line.qty}
                       </p>
                     </div>
                     <div className='flex items-center gap-1.5'>
                       <button
                         type='button'
-                        onClick={() => change(item.id, -1)}
-                        aria-label={`Remove one ${item.name}`}
+                        onClick={() =>
+                          change(line.item, line.variant, line.extras, -1)
+                        }
+                        aria-label={`Remove one ${line.item.name}`}
                         className='h-7 w-7 rounded-md border border-stone-300 leading-none'
                       >
                         −
                       </button>
                       <span className='w-5 text-center text-sm tabular-nums'>
-                        {qty}
+                        {line.qty}
                       </span>
                       <button
                         type='button'
-                        onClick={() => change(item.id, 1)}
-                        aria-label={`Add one more ${item.name}`}
+                        onClick={() =>
+                          change(line.item, line.variant, line.extras, 1)
+                        }
+                        aria-label={`Add one more ${line.item.name}`}
                         className='h-7 w-7 rounded-md border border-stone-300 leading-none'
                       >
                         +
                       </button>
                     </div>
                     <span className='w-20 text-right text-sm font-medium tabular-nums'>
-                      {money(item.price * qty)}
+                      {money(line.price * line.qty)}
                     </span>
                   </li>
                 ))}
@@ -407,7 +610,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
               </button>
               <button
                 type='button'
-                onClick={() => setCart({})}
+                onClick={() => setCart([])}
                 className='rounded-full border border-[#d9d0c3] px-3 py-2.5 text-sm hover:bg-[#eee8dd]'
               >
                 Clear

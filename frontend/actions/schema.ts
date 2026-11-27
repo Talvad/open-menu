@@ -36,6 +36,20 @@ const shopFields = {
     .optional(),
   address: text(200).optional(),
   currency: z.enum(CURRENCIES),
+  timeZone: z
+    .string()
+    .trim()
+    .min(1)
+    .max(64)
+    .default('Asia/Kolkata')
+    .refine((value) => {
+      try {
+        new Intl.DateTimeFormat('en', { timeZone: value });
+        return true;
+      } catch {
+        return false;
+      }
+    }, 'Enter a valid IANA time zone, such as Asia/Kolkata'),
 };
 
 export const shopCreateSchema = z.object({ ...shopFields, slug: slugSchema });

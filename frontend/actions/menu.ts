@@ -6,6 +6,7 @@
 import type { UploadTicket } from '@/lib/types';
 import { api } from '@/lib/api';
 import { requireSession } from '@/lib/auth/session';
+import { localDateTimeToUtc } from '@/lib/time-zone';
 import {
   attributesFrom,
   bool,
@@ -16,6 +17,63 @@ import {
   str,
   tagsFrom,
 } from './util';
+
+function parsePriceOptions(value: string, field: string) {
+  const options = [];
+  for (const [index, rawLine] of value.split('\n').entries()) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const separator = line.lastIndexOf(':');
+    if (separator <= 0) {
+      throw new Error(`${field} row ${index + 1} must use Name: price format.`);
+    }
+    const name = line.slice(0, separator).trim();
+    const priceAdjustment = Number(line.slice(separator + 1).trim());
+    if (!name || !Number.isFinite(priceAdjustment) || priceAdjustment < 0) {
+      throw new Error(`${field} row ${index + 1} has an invalid name or price.`);
+    }
+    options.push({ name, priceAdjustment });
+  }
+  return options;
+}
+
+function itemScheduleFromForm(fd: FormData, timeZone: string) {
+  const startsAt = str(fd, 'scheduleStartsAt');
+  const endsAt = str(fd, 'scheduleEndsAt');
+  const availabilityChoice = str(fd, 'scheduleAvailability');
+  const label = str(fd, 'scheduleLabel');
+  const specialPriceText = str(fd, 'scheduleSpecialPrice');
+  if (
+    !startsAt &&
+    !endsAt &&
+    availabilityChoice === 'unchanged' &&
+    !label &&
+    !specialPriceText
+  )
+    return null;
+
+  if (!startsAt || !endsAt)
+    throw new Error('Choose both a start and end time for the schedule.');
+
+  const specialPrice = specialPriceText ? Number(specialPriceText) : undefined;
+  if (specialPriceText && (!Number.isFinite(specialPrice) || specialPrice! < 0))
+    throw new Error('Enter a valid special price.');
+
+  const availability =
+    availabilityChoice === 'available'
+      ? true
+      : availabilityChoice === 'sold-out'
+        ? false
+        : undefined;
+
+  return {
+    startsAt: localDateTimeToUtc(startsAt, timeZone),
+    endsAt: localDateTimeToUtc(endsAt, timeZone),
+    ...(availability !== undefined ? { availability } : {}),
+    ...(label ? { label } : {}),
+    ...(specialPrice !== undefined ? { specialPrice } : {}),
+  };
+}
 
 /* ------------------------------ groups ------------------------------ */
 
@@ -70,6 +128,24 @@ export async function saveItemAction(
   const itemId = str(fd, 'itemId');
   const price = Number(str(fd, 'price') || '0');
   if (!Number.isFinite(price)) return { error: 'Enter a valid price' };
+  const variantName = str(fd, 'variantName');
+  let variant;
+  let extras;
+  let schedule;
+  try {
+    const options = parsePriceOptions(str(fd, 'variantOptions'), 'Variant');
+    if (options.length && !variantName)
+      throw new Error('Name the required variant group.');
+    if (!options.length && variantName)
+      throw new Error('Add at least one choice to the required variant group.');
+    variant = options.length ? { name: variantName, options } : null;
+    extras = parsePriceOptions(str(fd, 'extras'), 'Extra');
+    schedule = bool(fd, 'clearSchedule')
+      ? null
+      : itemScheduleFromForm(fd, str(fd, 'shopTimeZone'));
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Invalid item options.' };
+  }
 
   const body = {
     groupId: str(fd, 'groupId'),
@@ -82,6 +158,9 @@ export async function saveItemAction(
     sortOrder: int(fd, 'sortOrder'),
     tags: tagsFrom(fd, 'tags'),
     attributes: attributesFrom(fd, 'attributes'),
+    variant,
+    extras,
+    schedule,
   };
   try {
     if (itemId)
@@ -91,6 +170,28 @@ export async function saveItemAction(
     return { message: 'Saved' };
   } catch (e) {
     return fail(e);
+  }
+}
+
+export async function importItemsAction(
+  shopId: string,
+  items: Array<Record<string, unknown>>,
+): Promise<{ imported?: number; error?: string }> {
+  await requireSession();
+  try {
+    const result = await api<{ imported: number }>(
+      `/shops/${shopId}/items/import`,
+      { method: 'POST', body: { items } },
+    );
+    await bustShopCache(shopId);
+    return { imported: result.imported };
+  } catch (error) {
+    const result = fail(error);
+    return {
+      error:
+        result?.error ??
+        'Could not import menu items. Please review the file and try again.',
+    };
   }
 }
 

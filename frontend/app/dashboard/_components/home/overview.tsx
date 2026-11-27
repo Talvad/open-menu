@@ -5,6 +5,7 @@ import { env } from '@/lib/env';
 import { Shop } from '@/lib/types';
 import { StatusBadge } from '@/components/status-badge';
 import { ResubmitButton } from './resubmit-form';
+import { MenuShareKit } from './menu-share-kit';
 
 type Props = { shop: Shop };
 
@@ -96,6 +97,7 @@ export default function OwnerOverview({ shop }: Props) {
               <ArrowUpRight aria-hidden='true' className='h-4 w-4' />
             </Link>
           </div>
+          <MenuShareKit menuUrl={publicMenuUrl} shopName={shop.name} />
         </section>
       )}
 

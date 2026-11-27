@@ -31,6 +31,7 @@ export async function saveShopAction(
       'whatsapp',
       'address',
       'currency',
+      'timeZone',
     ]);
     if (!parsed.ok) return parsed.state;
     const body = parsed.data;

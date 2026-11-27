@@ -11,6 +11,7 @@ export interface Shop {
   whatsapp: string;
   address: string;
   currency: Currency;
+  timeZone: string;
   status: ShopStatus;
   statusReason: string;
   ownerEmail: string;
@@ -23,6 +24,24 @@ export interface MenuGroup {
   name: string;
   sortOrder: number;
   visible: boolean;
+}
+
+export interface PriceOption {
+  name: string;
+  priceAdjustment: number;
+}
+
+export interface ItemVariant {
+  name: string;
+  options: PriceOption[];
+}
+
+export interface ItemSchedule {
+  startsAt: string;
+  endsAt: string;
+  availability?: boolean;
+  label?: string;
+  specialPrice?: number;
 }
 
 export interface MenuItem {
@@ -39,6 +58,9 @@ export interface MenuItem {
   sortOrder: number;
   tags: string[];
   attributes: Record<string, string>;
+  variant?: ItemVariant;
+  extras: PriceOption[];
+  schedule?: ItemSchedule;
 }
 
 /** Full menu for the dashboard (includes hidden groups and items). */
@@ -79,6 +101,10 @@ export interface PublicItem {
   available: boolean;
   tags: string[];
   attributes: Record<string, string>;
+  variant?: ItemVariant;
+  extras: PriceOption[];
+  originalPrice?: number;
+  specialLabel?: string;
 }
 
 export interface PublicGroup {
@@ -98,6 +124,7 @@ export interface PublicMenu {
     whatsapp: string;
     address: string;
     currency: Currency;
+    timeZone: string;
   };
   groups: PublicGroup[];
 }

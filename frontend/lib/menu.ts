@@ -12,7 +12,6 @@ import type { PublicMenu } from './types'
 export async function getPublicMenu(slug: string): Promise<PublicMenu | null> {
   'use cache'
   cacheTag(`shop:${slug}`)
-  cacheLife('hours')
 
   const base = process.env.API_URL?.replace(/\/$/, '')
   if (!base) throw new Error('Missing environment variable API_URL')
@@ -23,5 +22,21 @@ export async function getPublicMenu(slug: string): Promise<PublicMenu | null> {
     return null
   }
   if (!res.ok) throw new Error(`Menu API responded with ${res.status}`) // errors are not cached
-  return (await res.json()) as PublicMenu
+  const data = (await res.json()) as PublicMenu & {
+    nextTransitionInSeconds?: number
+  }
+  const transition = data.nextTransitionInSeconds
+  if (typeof transition === 'number' && Number.isFinite(transition)) {
+    const expire = Math.max(2, Math.ceil(transition))
+    cacheLife({
+      stale: 1,
+      revalidate: Math.max(1, expire - 1),
+      expire,
+    })
+  } else {
+    cacheLife('hours')
+  }
+  const menu = { ...data }
+  delete menu.nextTransitionInSeconds
+  return menu
 }

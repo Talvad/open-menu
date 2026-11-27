@@ -4,6 +4,7 @@ import {
   DeleteCommand,
   GetCommand,
   PutCommand,
+  TransactWriteCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 
@@ -24,6 +25,7 @@ import { LIMITS } from '../lib/constants';
 import {
   groupCreateSchema,
   groupUpdateSchema,
+  itemImportSchema,
   itemCreateSchema,
   itemUpdateSchema,
 } from '../lib/schemas';
@@ -196,6 +198,112 @@ export const createItem: Handler = async ({ event, auth }) => {
   await ddb.send(new PutCommand({ TableName: TABLE, Item: record }));
   await audit(auth, shopId, 'ITEM_CREATED', `Created item "${input.name}"`);
   return created({ item: toItem(record) });
+};
+
+export const importItems: Handler = async ({ event, auth }) => {
+  const shopId = pathParam(event, 'shopId');
+  await requireShop(auth, shopId, { write: true });
+  const { items: input } = parseBody(event, itemImportSchema);
+
+  const [existingItems, existingGroups] = await Promise.all([
+    listByPrefix(shopId, 'ITEM#'),
+    listByPrefix(shopId, 'GROUP#'),
+  ]);
+  if (existingItems.length + input.length > LIMITS.maxItemsPerShop) {
+    throw new HttpError(
+      409,
+      `This import would exceed the ${LIMITS.maxItemsPerShop}-item menu limit`,
+    );
+  }
+
+  const groups = new Set(existingGroups.map((group) => group.groupId));
+  const existingNames = new Set(
+    existingItems.map(
+      (item) => `${item.groupId}:${String(item.name).normalize('NFKC').trim().toLowerCase()}`,
+    ),
+  );
+  const importedNames = new Set<string>();
+  const duplicates: string[] = [];
+
+  for (const item of input) {
+    if (!groups.has(item.groupId))
+      throw new HttpError(400, `Group does not exist: ${item.groupId}`);
+    const key = `${item.groupId}:${item.name.normalize('NFKC').trim().toLowerCase()}`;
+    if (existingNames.has(key) || importedNames.has(key))
+      duplicates.push(item.name);
+    importedNames.add(key);
+  }
+  if (duplicates.length) {
+    throw new HttpError(
+      409,
+      `Import contains duplicate item names: ${[...new Set(duplicates)].join(', ')}`,
+    );
+  }
+
+  const now = new Date().toISOString();
+  const groupIds = [...new Set(input.map((item) => item.groupId))];
+  const itemRecords = input.map((item) => {
+    const itemId = randomUUID();
+    return {
+      ...keys.item(shopId, itemId),
+      entity: 'ITEM',
+      itemId,
+      ...item,
+      price: round2(item.price),
+      createdAt: now,
+      updatedAt: now,
+    };
+  });
+  const auditId = randomUUID().slice(0, 8);
+
+  try {
+    await ddb.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          ...groupIds.map((groupId) => ({
+            ConditionCheck: {
+              TableName: TABLE,
+              Key: keys.group(shopId, groupId),
+              ConditionExpression: 'attribute_exists(PK)',
+            },
+          })),
+          ...itemRecords.map((Item) => ({
+            Put: {
+              TableName: TABLE,
+              Item,
+              ConditionExpression: 'attribute_not_exists(PK)',
+            },
+          })),
+          {
+            Put: {
+              TableName: TABLE,
+              Item: {
+                PK: `SHOP#${shopId}`,
+                SK: `AUDIT#${now}#${auditId}`,
+                entity: 'AUDIT',
+                at: now,
+                actorSub: auth.sub,
+                actorEmail: auth.email,
+                actorRole: auth.role,
+                action: 'ITEMS_IMPORTED',
+                summary: `Imported ${itemRecords.length} menu item(s)`,
+              },
+              ConditionExpression: 'attribute_not_exists(PK)',
+            },
+          },
+        ],
+      }),
+    );
+  } catch (error) {
+    if ((error as { name?: string }).name === 'TransactionCanceledException')
+      throw new HttpError(
+        409,
+        'The menu changed while importing. Refresh it and try again.',
+      );
+    throw error;
+  }
+
+  return created({ imported: itemRecords.length });
 };
 
 export const updateItem: Handler = async ({ event, auth }) => {

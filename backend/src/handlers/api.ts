@@ -7,6 +7,7 @@ import {
   deleteGroup,
   deleteItem,
   getMenu,
+  importItems,
   updateGroup,
   updateItem,
 } from '../routes/menu';
@@ -32,6 +33,7 @@ const routes: Record<string, Handler> = {
   'PUT /shops/{shopId}/groups/{groupId}': updateGroup,
   'DELETE /shops/{shopId}/groups/{groupId}': deleteGroup,
   'POST /shops/{shopId}/items': createItem,
+  'POST /shops/{shopId}/items/import': importItems,
   'PUT /shops/{shopId}/items/{itemId}': updateItem,
   'DELETE /shops/{shopId}/items/{itemId}': deleteItem,
   'POST /shops/{shopId}/upload-url': createUploadUrl,

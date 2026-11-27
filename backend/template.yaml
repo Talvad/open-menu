@@ -558,6 +558,21 @@ Resources:
                   },
               },
           }
+        ImportItems:
+          {
+            Type: HttpApi,
+            Properties:
+              {
+                ApiId: !Ref HttpApi,
+                Method: POST,
+                Path: '/shops/{shopId}/items/import',
+                Auth:
+                  {
+                    Authorizer: CognitoJwt,
+                    AuthorizationScopes: [openmenu/shop.write],
+                  },
+              },
+          }
         UpdateItem:
           {
             Type: HttpApi,

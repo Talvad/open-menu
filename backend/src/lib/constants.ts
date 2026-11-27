@@ -67,6 +67,7 @@ export type ImageContentType = keyof typeof IMAGE_TYPES;
 export const LIMITS = {
   maxGroupsPerShop: 50,
   maxItemsPerShop: 500,
+  maxItemsPerImport: 49,
   maxImageBytes: 3 * 1024 * 1024,
   maxTagsPerItem: 8,
   maxAttributesPerItem: 10,

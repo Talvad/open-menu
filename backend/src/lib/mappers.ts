@@ -17,6 +17,7 @@ export function toShop(r: Rec): Shop {
     whatsapp: r.whatsapp ?? '',
     address: r.address ?? '',
     currency: r.currency,
+    timeZone: r.timeZone ?? 'Asia/Kolkata',
     status: r.status,
     statusReason: r.statusReason ?? '',
     ownerEmail: r.ownerEmail ?? '',
@@ -48,6 +49,9 @@ export function toItem(r: Rec): MenuItem {
     sortOrder: r.sortOrder ?? 0,
     tags: r.tags ?? [],
     attributes: r.attributes ?? {},
+    variant: r.variant ?? undefined,
+    extras: r.extras ?? [],
+    schedule: r.schedule ?? undefined,
   };
 }
 

@@ -7,8 +7,21 @@ import { formatDate } from '@/lib/format';
 import { TYPE_LABELS } from '@/lib/constants';
 import MenuManager from '@/app/dashboard/_components/menu/menu-manager';
 import { StatusActions } from '@/components/status-actions';
+import { Suspense } from 'react';
 
-export default async function AdminShopPage({
+export default function AdminShopPage({
+  params,
+}: {
+  params: Promise<{ shopId: string }>;
+}) {
+  return (
+    <Suspense fallback={<AdminShopFallback />}>
+      <AdminShopContent params={params} />
+    </Suspense>
+  );
+}
+
+async function AdminShopContent({
   params,
 }: {
   params: Promise<{ shopId: string }>;
@@ -105,6 +118,15 @@ export default async function AdminShopPage({
           </ul>
         )}
       </section>
+    </div>
+  );
+}
+
+function AdminShopFallback() {
+  return (
+    <div className='space-y-4' role='status'>
+      <p className='text-sm text-stone-500'>Loading shop details…</p>
+      <div aria-hidden='true' className='h-32 animate-pulse rounded-xl bg-stone-200' />
     </div>
   );
 }

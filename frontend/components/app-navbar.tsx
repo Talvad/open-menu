@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { connection } from 'next/server';
 import { getSession, Session } from '@/lib/auth/session';
 import {
   DropdownItem,
@@ -10,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 
 export async function AppNavbar() {
+  await connection();
   const session = await getSession();
   return (
     <nav className='flex items-center gap-5 text-sm ml-auto'>

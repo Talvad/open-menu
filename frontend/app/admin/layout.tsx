@@ -1,16 +1,25 @@
 import AppHeader from '@/components/app-header';
 import { requireAdmin } from '@/lib/auth/session';
+import { Suspense } from 'react';
 
 const menu = [
   { href: '/admin?status=PENDING', label: 'Approval queue' },
   { href: '/admin?status=ALL', label: 'All shops' },
 ];
 export const instant = false;
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  return (
+    <Suspense fallback={<AdminAreaFallback />}>
+      <AdminArea>{children}</AdminArea>
+    </Suspense>
+  );
+}
+
+async function AdminArea({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
   return (
     <>
@@ -24,5 +33,13 @@ export default async function RootLayout({
       </AppHeader>
       <main className='mx-auto max-w-4xl px-4 py-8'>{children}</main>
     </>
+  );
+}
+
+function AdminAreaFallback() {
+  return (
+    <main className='mx-auto max-w-4xl px-4 py-8' role='status'>
+      <p className='text-sm text-stone-500'>Loading admin area…</p>
+    </main>
   );
 }

@@ -1,5 +1,6 @@
 import AppHeader from '@/components/app-header';
 import { requireOwner } from '@/lib/auth/session';
+import { Suspense } from 'react';
 
 const menu = [
   { href: '/dashboard', label: 'Overview' },
@@ -7,11 +8,19 @@ const menu = [
   { href: '/dashboard/settings', label: 'Settings' },
 ];
 export const instant = false;
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  return (
+    <Suspense fallback={<OwnerAreaFallback />}>
+      <OwnerArea>{children}</OwnerArea>
+    </Suspense>
+  );
+}
+
+async function OwnerArea({ children }: { children: React.ReactNode }) {
   const session = await requireOwner();
   return (
     <>
@@ -25,5 +34,13 @@ export default async function RootLayout({
       </AppHeader>
       <main className='mx-auto max-w-4xl px-4 py-8'>{children}</main>
     </>
+  );
+}
+
+function OwnerAreaFallback() {
+  return (
+    <main className='mx-auto max-w-4xl px-4 py-8' role='status'>
+      <p className='text-sm text-stone-500'>Loading your dashboard…</p>
+    </main>
   );
 }

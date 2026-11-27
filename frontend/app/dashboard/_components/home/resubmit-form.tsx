@@ -16,8 +16,8 @@ export function ResubmitButton({ shopId }: { shopId: string }) {
       <input type='hidden' name='shopId' value={shopId} />
       <Button type='submit' size='sm'>
         {isPending
-          ? 'Submitting for review again...'
-          : 'Submit for review again'}
+          ? 'Sending it back for review…'
+          : 'Resubmit for review'}
       </Button>
     </form>
   );

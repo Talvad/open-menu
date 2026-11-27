@@ -23,7 +23,7 @@ export default function DeleteItemForm({ shopId, itemId }: Props) {
   return (
     <DropdownRoot>
       <DropdownTrigger>
-        <span className='px-1 py-0.5 rounded-xs text-xs border border-primary text-primary bg-transparent transition-colors hover:bg-stone-50'>
+        <span className='rounded-full border border-[#d9d0c3] bg-paper px-3 py-1.5 text-xs font-semibold text-[#716e63] transition-colors hover:border-[#c94f3d] hover:text-primary'>
           {isPending ? 'Deleting...' : 'Delete'}
         </span>
       </DropdownTrigger>
@@ -32,8 +32,8 @@ export default function DeleteItemForm({ shopId, itemId }: Props) {
           <form action={formAction}>
             <input type='hidden' name='shopId' value={shopId} />
             <input type='hidden' name='itemId' value={itemId} />
-            <button type='submit' className=' px-3 py-1 text-xs font-semibold'>
-              Confirm
+            <button type='submit' className='cursor-pointer px-3 py-2 text-xs font-semibold text-primary'>
+              Delete item
             </button>
           </form>
         </DropdownItem>

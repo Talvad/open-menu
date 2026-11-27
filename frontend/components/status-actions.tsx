@@ -21,7 +21,7 @@ export function StatusActions({ shop }: { shop: Shop }) {
           <input type='hidden' name='shopId' value={shop.id} />
           <input type='hidden' name='status' value='APPROVED' />
           <Button type='submit' size='xs' variant='outline'>
-            {s === 'SUSPENDED' ? 'Reinstate' : 'Approve'}
+            {s === 'SUSPENDED' ? 'Restore shop' : 'Approve shop'}
           </Button>
         </form>
       )}
@@ -41,13 +41,13 @@ export function StatusActions({ shop }: { shop: Shop }) {
               required={s === 'PENDING'}
               placeholder={
                 s === 'PENDING'
-                  ? 'Reason shown to the owner (required)'
-                  : 'Reason (optional)'
+                  ? 'Add a note for the owner (required)'
+                  : 'Why are you pausing this shop? (optional)'
               }
             />
           </Field>
           <Button type='submit' size='xs' variant='outline'>
-            {s === 'PENDING' ? 'Reject' : 'Suspend'}
+            {s === 'PENDING' ? 'Decline shop' : 'Pause shop'}
           </Button>
         </form>
       )}

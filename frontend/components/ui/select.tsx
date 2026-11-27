@@ -5,7 +5,7 @@ type Props = ComponentProps<'select'>;
 export default function Select({ className = '', ...props }: Props) {
   return (
     <select
-      className={`box-border w-full rounded-[10px] border border-[#D6D3D1] bg-white px-3 py-2.75 text-[15px] text-foreground focus:border-primary focus:outline-none ${className}`}
+      className={`box-border w-full rounded-xl border border-[#d9d0c3] bg-paper px-3.5 py-3 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary/15 focus:outline-none ${className}`}
       {...props}
     />
   );

@@ -1,32 +1,41 @@
 import CreateShopForm from './create-shop-form';
+import { Check } from 'lucide-react';
 
 export default function CreateShop() {
   return (
-    <section className={` mx-auto max-w-4xl px-4 pb-14 pt-10 font-sans`}>
-      <h1 className='font-bricolage m-0 text-[34px] font-bold tracking-[-0.02em]'>
-        Create your shop
+    <section className='mx-auto max-w-5xl pb-14 pt-6 font-sans sm:pt-10'>
+      <p className='text-[10px] font-semibold uppercase tracking-[0.2em] text-primary'>
+        Your next chapter starts here
+      </p>
+      <h1 className='mt-3 font-bricolage text-4xl font-bold tracking-[-0.06em] text-forest sm:text-5xl'>
+        Let’s put your shop on the map.
       </h1>
-      <p className='m-0 mt-2 max-w-140 text-base text-[#44403C]'>
-        Tell us about your shop. An administrator reviews new shops before the
-        public menu goes live.
+      <p className='mt-3 max-w-2xl text-sm leading-6 text-[#716e63] sm:text-base sm:leading-7'>
+        Tell us a little about your business. Once your shop is approved, your
+        very own menu link is ready to share.
       </p>
 
-      <div className='mt-7 flex flex-wrap items-start gap-6'>
-        {/* Form */}
+      <div className='mt-8 grid items-start gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,0.7fr)]'>
         <CreateShopForm />
 
-        {/* Info Sidebar */}
-        <aside className='box-border max-w-[320px] flex-[1_1_260px] rounded-[14px] border border-[#FDE68A] bg-[#FFFBEB] p-5'>
-          <h2 className='m-0 mb-3 text-base font-bold text-[#78350F]'>
-            What happens next
+        <aside className='rounded-2xl border border-[#d9e2d3] bg-[#edf1e8] p-5 sm:p-6'>
+          <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-forest'>
+            From here to live
+          </p>
+          <h2 className='mt-2 font-bricolage text-xl font-bold tracking-[-0.04em] text-forest'>
+            A few small steps.
           </h2>
-          <ol className='m-0 flex list-decimal flex-col gap-2.5 pl-5 text-sm leading-normal text-[#44403C]'>
-            <li>
-              Your shop is saved as <strong>Pending approval</strong>.
-            </li>
-            <li>Add your groups and items while you wait.</li>
-            <li>An administrator reviews and approves it.</li>
-            <li>Your menu goes live at its web address.</li>
+          <ol className='mt-5 space-y-4'>
+            {[
+              'Your shop joins the review queue.',
+              'Add groups and items while you wait.',
+              'Once approved, your shareable menu is live.',
+            ].map((step) => (
+              <li key={step} className='flex gap-3 text-sm leading-5 text-[#586657]'>
+                <Check aria-hidden='true' className='mt-0.5 h-4 w-4 shrink-0 text-primary' />
+                {step}
+              </li>
+            ))}
           </ol>
         </aside>
       </div>

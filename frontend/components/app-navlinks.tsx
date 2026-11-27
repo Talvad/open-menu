@@ -6,7 +6,7 @@ type Props = { links: { href: string; label: string }[] };
 
 export default function AppNavLinks({ links }: Props) {
   return (
-    <nav className='flex items-center gap-4'>
+    <nav aria-label='Main navigation' className='flex flex-wrap items-center gap-1'>
       {links.map((link) => (
         <NavLink key={link.href} {...link} />
       ))}
@@ -16,10 +16,15 @@ export default function AppNavLinks({ links }: Props) {
 
 function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = href.includes('?') ? false : pathname === href;
   return (
     <Link
-      className={` text-gray-600 ${isActive && 'font-semibold border-b-2 border-b-primary'}`}
+      aria-current={isActive ? 'page' : undefined}
+      className={`rounded-full px-3 py-2 text-sm transition-colors hover:bg-[#efe8dc] hover:text-foreground ${
+        isActive
+          ? 'bg-[#e9e2d6] font-semibold text-forest'
+          : 'font-medium text-[#68665b]'
+      }`}
       href={href}
     >
       {label}

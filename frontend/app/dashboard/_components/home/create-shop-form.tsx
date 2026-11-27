@@ -25,7 +25,7 @@ export default function CreateShopForm({ shop }: Props) {
   return (
     <form
       action={formAction}
-      className='box-border flex max-w-xl flex-[1_1_480px] flex-col gap-4.5 rounded-[14px] border border-[#E7E5E4] bg-white p-6'
+      className='box-border flex flex-col gap-3 rounded-2xl border border-[#e6ddd0] bg-paper p-5 shadow-[0_12px_34px_rgba(47,54,43,0.05)] sm:p-7'
     >
       <FormError state={state} />
       {shop && <input type='hidden' name='shopId' value={shop.id} />}
@@ -44,20 +44,23 @@ export default function CreateShopForm({ shop }: Props) {
 
       {!shop && (
         <Field>
-          <FieldLabel htmlFor='slug'>slug</FieldLabel>
-          <div className='flex items-center gap-2'>
-            <span className='text-[15px] text-[#57534E]'>/</span>
+          <FieldLabel htmlFor='slug'>Menu address</FieldLabel>
+          <div className='flex items-center gap-0'>
+            <span className='rounded-l-xl border border-r-0 border-[#d9d0c3] bg-[#eee8dd] px-3 py-3 text-sm text-[#716e63]'>
+              /
+            </span>
             <Input
               id='slug'
               type='text'
               name='slug'
               defaultValue={state?.values?.slug}
               required
-              placeholder='demo-cafe'
+              className='rounded-l-none'
+              placeholder='your-shop-name'
             />
           </div>
           <FieldDescription>
-            Lowercase letters, numbers and hyphens. It cannot be changed later.
+            This becomes your unique share link and cannot be changed later.
           </FieldDescription>
           <FieldError errors={state?.fieldErrors?.slug || []} />
         </Field>
@@ -157,7 +160,7 @@ export default function CreateShopForm({ shop }: Props) {
 
       <Field>
         <Button type='submit' disabled={isPending}>
-          {isPending ? 'Creating shop...' : 'Create shop'}
+          {isPending ? 'Setting up your shop…' : shop ? 'Save shop details' : 'Create my shop'}
         </Button>
       </Field>
     </form>

@@ -1,12 +1,13 @@
-import React from 'react';
-
-type Props = {};
-
-export default function NoGroupIndicator({}: Props) {
+export default function NoGroupIndicator() {
   return (
-    <p className='text-stone-500'>
-      No groups yet. Add one (for example “Breakfast” or “Furniture”), then add
-      items to it.
-    </p>
+    <div className='rounded-2xl border border-dashed border-[#d9d0c3] bg-paper px-5 py-8'>
+      <p className='font-bricolage text-lg font-bold text-forest'>
+        Your menu starts with a group.
+      </p>
+      <p className='mt-2 max-w-xl text-sm leading-6 text-[#716e63]'>
+        Create a section—like “Breakfast”, “Drinks”, or “Living room”—then add
+        your items to it.
+      </p>
+    </div>
   );
 }

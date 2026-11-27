@@ -17,7 +17,7 @@ export default function AdminHomePage({
   searchParams: Promise<{ status?: string }>;
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className='text-sm text-[#716e63]'>Opening the review desk…</div>}>
       <AdminHome searchParams={searchParams} />
     </Suspense>
   );
@@ -31,48 +31,85 @@ async function AdminHome({
   const raw = (await searchParams).status?.toUpperCase() ?? 'PENDING';
   const status = (FILTERS as readonly string[]).includes(raw) ? raw : 'PENDING';
   const { shops } = await getAdminShops(status);
+  const filterLabel = (filter: string) => {
+    if (filter === 'ALL') return 'All shops';
+    if (filter === 'PENDING') return 'Needs review';
+    return filter.charAt(0) + filter.slice(1).toLowerCase();
+  };
 
   return (
-    <div className='space-y-6'>
-      <h1 className='text-2xl font-bold'>Shops</h1>
+    <div className='mx-auto max-w-5xl space-y-8'>
+      <header className='flex flex-wrap items-end justify-between gap-4'>
+        <div>
+          <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-primary'>
+            Operations desk
+          </p>
+          <h1 className='mt-2 font-bricolage text-4xl font-bold tracking-[-0.06em] text-forest'>
+            Shop review
+          </h1>
+          <p className='mt-2 text-sm text-[#716e63]'>
+            Review submissions and keep the marketplace in good shape.
+          </p>
+        </div>
+        <p className='rounded-full bg-[#e5eadf] px-4 py-2 text-xs font-semibold text-forest'>
+          {shops.length} {shops.length === 1 ? 'shop' : 'shops'} in this view
+        </p>
+      </header>
 
-      <div className='flex flex-wrap gap-2'>
+      <nav aria-label='Filter shops' className='flex flex-wrap gap-2'>
         {FILTERS.map((f) => (
           <Link
             key={f}
             href={`/admin?status=${f}`}
             className={
               f === status
-                ? 'inline-flex items-center justify-center rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50'
-                : 'inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-medium hover:bg-stone-100 disabled:opacity-50'
+                ? 'inline-flex items-center justify-center rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-[#19382e]'
+                : 'inline-flex items-center justify-center rounded-full border border-[#d9d0c3] bg-paper px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-[#eee8dd]'
             }
             aria-current={f === status ? 'page' : undefined}
           >
-            {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
+            {filterLabel(f)}
           </Link>
         ))}
-      </div>
+      </nav>
 
       {shops.length === 0 ? (
-        <p className='text-stone-500'>No shops with this status.</p>
+        <div className='rounded-2xl border border-dashed border-[#d9d0c3] bg-paper px-6 py-12 text-center'>
+          <h2 className='font-bricolage text-xl font-bold text-forest'>
+            Nothing in this pile.
+          </h2>
+          <p className='mt-2 text-sm text-[#716e63]'>
+            No shops match this filter right now.
+          </p>
+        </div>
       ) : (
-        <ul className='space-y-3'>
+        <ul className='divide-y divide-[#e6ddd0] overflow-hidden rounded-2xl border border-[#e6ddd0] bg-paper'>
           {shops.map((shop) => (
             <li key={shop.id}>
               <Link
                 href={`/admin/shops/${shop.id}`}
-                className={`rounded-xl border border-stone-200 bg-white p-4 shadow-sm flex flex-wrap items-center gap-3 hover:border-amber-400`}
+                className='group flex flex-wrap items-center gap-4 px-4 py-4 transition-colors hover:bg-white sm:px-6'
               >
-                <div className='min-w-0 flex-1'>
-                  <p className='font-semibold'>{shop.name}</p>
-                  <p className='truncate text-sm text-stone-500'>
+                <div className='flex min-w-0 flex-1 items-start gap-4'>
+                  <span className='mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#eee8dd] font-bricolage text-sm font-bold text-forest'>
+                    {shop.name.charAt(0)}
+                  </span>
+                  <div className='min-w-0 flex-1'>
+                    <p className='font-bricolage text-lg font-bold tracking-[-0.03em] text-forest'>
+                      {shop.name}
+                    </p>
+                    <p className='truncate text-sm text-[#716e63]'>
                     /{shop.slug} · {TYPE_LABELS[shop.type]} · {shop.ownerEmail}
-                  </p>
-                  <p className='text-xs text-stone-400'>
-                    Created {formatDate(shop.createdAt)}
-                  </p>
+                    </p>
+                    <p className='mt-1 text-[11px] text-[#898477]'>
+                      Joined {formatDate(shop.createdAt)}
+                    </p>
+                  </div>
                 </div>
                 <StatusBadge status={shop.status} />
+                <span className='hidden text-xs font-semibold text-primary group-hover:inline'>
+                  Open file →
+                </span>
               </Link>
             </li>
           ))}

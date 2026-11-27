@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowUpRight, Check, Clock3, Eye, PencilLine } from 'lucide-react';
 
 import { env } from '@/lib/env';
 import { Shop } from '@/lib/types';
@@ -6,202 +7,151 @@ import { StatusBadge } from '@/components/status-badge';
 import { ResubmitButton } from './resubmit-form';
 
 type Props = { shop: Shop };
+
 export default function OwnerOverview({ shop }: Props) {
-  const shopSlug = shop.slug;
-  const publicMenuUrl = `${env.appUrl}/${shopSlug}`;
-  const status = shop.status;
+  const publicMenuUrl = `${env.appUrl}/${shop.slug}`;
+
   return (
-    <div className='space-y-6'>
-      <div className='flex flex-wrap items-center gap-3'>
-        <h1 className='text-2xl font-bold font-bricolage'>{shop.name}</h1>
-        <StatusBadge status={shop.status} />
-      </div>
-      {shop.status === 'PENDING' && (
-        <p className='rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900'>
-          Your shop is waiting for approval. You can already add groups and
-          items; the public menu goes live once an administrator approves it.
+    <div className='space-y-8'>
+      <section className='relative isolate overflow-hidden rounded-[2rem] bg-forest px-6 py-8 text-paper sm:px-9 sm:py-10'>
+        <div
+          aria-hidden='true'
+          className='absolute -right-10 -top-20 -z-10 h-64 w-64 rounded-full border-[28px] border-white/[0.06]'
+        />
+        <p className='text-[10px] font-semibold uppercase tracking-[0.2em] text-[#efb08c]'>
+          Your shop, your way
         </p>
+        <div className='mt-3 flex flex-wrap items-center gap-3'>
+          <h1 className='font-bricolage text-3xl font-bold tracking-[-0.06em] sm:text-5xl'>
+            {shop.name}
+          </h1>
+          <StatusBadge status={shop.status} />
+        </div>
+        <p className='mt-3 max-w-xl text-sm leading-6 text-white/70'>
+          A good menu is always a work in progress. Here’s where yours stands.
+        </p>
+      </section>
+
+      {shop.status === 'PENDING' && (
+        <div className='flex gap-4 rounded-2xl border border-[#e6d6ba] bg-[#fbf0dc] p-5 text-sm text-[#72532e]'>
+          <Clock3 aria-hidden='true' className='mt-0.5 h-5 w-5 shrink-0' />
+          <p>
+            Your shop is in the review queue. You can keep adding groups and
+            items while we take a look; your public menu goes live once approved.
+          </p>
+        </div>
       )}
 
       {shop.status === 'REJECTED' && (
-        <div className='space-y-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900'>
-          <p>
-            Your shop was not approved
-            {shop.statusReason ? `: ${shop.statusReason}` : '.'} Update your
-            details, then submit it again.
-          </p>
+        <div className='space-y-3 rounded-2xl border border-[#edc8bd] bg-[#fbebe6] p-5 text-sm text-[#853c31]'>
+          <div className='flex gap-3'>
+            <span className='font-semibold'>A quick update needed.</span>
+            <span>
+              {shop.statusReason
+                ? shop.statusReason
+                : 'Your shop needs a few changes before approval.'}{' '}
+              Update your details, then send it back for review.
+            </span>
+          </div>
           <ResubmitButton shopId={shop.id} />
         </div>
       )}
-      {shop.status === 'SUSPENDED' && (
-        <p className='rounded-lg border border-stone-300 bg-stone-100 px-4 py-3 text-sm'>
-          Your shop is suspended
-          {shop.statusReason ? `: ${shop.statusReason}` : '.'} Please contact
-          support.
-        </p>
-      )}
 
-      {shop.status === 'APPROVED' && (
-        <div
-          className={
-            'rounded-xl border border-stone-200 bg-white p-4 shadow-sm'
-          }
-        >
-          <p className='text-sm text-stone-500'>Your public menu</p>
-          <Link
-            href={`/${shop.slug}`}
-            className='break-all font-medium text-amber-700 underline'
-          >
-            {publicMenuUrl}
-          </Link>
-          <p className='mt-2 text-xs text-stone-500'>
-            Share this link or turn it into a QR code for your tables and
-            counter.
-          </p>
+      {shop.status === 'SUSPENDED' && (
+        <div className='flex gap-4 rounded-2xl border border-[#ded5c7] bg-[#eee8dd] p-5 text-sm text-[#5f5c52]'>
+          <span className='font-semibold'>Your menu is paused.</span>
+          <span>
+            {shop.statusReason
+              ? shop.statusReason
+              : 'Please contact support to get your shop back online.'}
+          </span>
         </div>
       )}
 
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <Link
-          href='/dashboard/menu'
-          className={`rounded-xl border border-stone-200 bg-white p-4 shadow-sm hover:border-amber-400`}
-        >
-          <h2 className='font-semibold'>Manage menu →</h2>
-          <p className='mt-1 text-sm text-stone-600'>
-            Groups, items, prices, photos and availability.
-          </p>
-        </Link>
-        <Link
-          href='/dashboard/settings'
-          className={`rounded-xl border border-stone-200 bg-white p-4 shadow-sm hover:border-amber-400`}
-        >
-          <h2 className='font-semibold'>Shop details →</h2>
-          <p className='mt-1 text-sm text-stone-600'>
-            Name, contact, WhatsApp number and currency.
-          </p>
-        </Link>
-      </div>
-    </div>
-  );
-  return (
-    <section
-      className={` mx-auto flex max-w-4xl flex-col gap-6 px-4 pb-14 pt-10 font-sans text-foreground`}
-    >
-      {/* Title & Status Badge */}
-      <div className='flex flex-wrap items-center gap-3'>
-        <h1 className='font-bricolage m-0 text-[34px] font-bold tracking-[-0.02em]'>
-          {shop.name}
-        </h1>
-
-        {status === 'APPROVED' && (
-          <span className='rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-semibold text-[#166534]'>
-            Approved
-          </span>
-        )}
-        {status === 'PENDING' && (
-          <span className='rounded-full bg-[#FEF3C7] px-2.5 py-1 text-xs font-semibold text-[#92400E]'>
-            Pending approval
-          </span>
-        )}
-        {status === 'REJECTED' && (
-          <span className='rounded-full bg-[#FEE2E2] px-2.5 py-1 text-xs font-semibold text-[#991B1B]'>
-            Rejected
-          </span>
-        )}
-        {status === 'SUSPENDED' && (
-          <span className='rounded-full bg-[#E7E5E4] px-2.5 py-1 text-xs font-semibold text-[#44403C]'>
-            Suspended
-          </span>
-        )}
-      </div>
-
-      {/* Public Menu Link Card */}
-      <div className='rounded-[14px] border border-[#E7E5E4] bg-white p-5'>
-        <p className='m-0 text-[13px] text-[#57534E]'>Your public menu</p>
-        <Link
-          href={`/${shopSlug}`}
-          target='_blank'
-          className='mt-1 inline-block break-all text-[17px] font-semibold text-primary underline hover:text-[#92400E]'
-        >
-          {publicMenuUrl}
-        </Link>
-        <p className='m-0 mt-2 text-[13px] text-[#57534E]'>
-          Share this link or turn it into a QR code for your tables and counter.
-        </p>
-      </div>
-
-      {/* Quick Action Cards */}
-      <div className='grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'>
-        <Link
-          href='/dashboard/menu'
-          className='block rounded-[14px] border border-[#E7E5E4] bg-white p-5 text-foreground transition-colors hover:border-[#D6D3D1] hover:bg-stone-50/50'
-        >
-          <h2 className='m-0 text-[17px] font-bold'>Manage menu →</h2>
-          <p className='m-0 mt-1.5 text-sm leading-normal text-[#44403C]'>
-            Groups, items, prices, photos and availability.
-          </p>
-        </Link>
-
-        <Link
-          href='/dashboard/settings'
-          className='block rounded-[14px] border border-[#E7E5E4] bg-white p-5 text-foreground transition-colors hover:border-[#D6D3D1] hover:bg-stone-50/50'
-        >
-          <h2 className='m-0 text-[17px] font-bold'>Shop details →</h2>
-          <p className='m-0 mt-1.5 text-sm leading-normal text-[#44403C]'>
-            Name, contact, WhatsApp number and currency.
-          </p>
-        </Link>
-      </div>
-
-      {/* Other States Preview / Reference Section */}
-      {/* <div className='mt-4 flex flex-col gap-4 border-t border-[#E7E5E4] pt-7'> */}
-      {/* <h2 className='m-0 text-[13px] font-bold uppercase tracking-[0.08em] text-[#57534E]'>
-          Other states the owner can see on this page
-        </h2> */}
-
-      {/* Pending */}
-      {/* <div className='flex flex-col gap-1.5'>
-          <span className='text-[13px] font-semibold text-[#44403C]'>
-            Pending
-          </span>
-          <p className='m-0 rounded-[10px] border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3 text-sm leading-normal text-[#78350F]'>
-            {resubmitted
-              ? 'Your shop was resubmitted and is waiting for approval. You can already add groups and items; the public menu goes live once an administrator approves it.'
-              : 'Your shop is waiting for approval. You can already add groups and items; the public menu goes live once an administrator approves it.'}
-          </p>
-        </div> */}
-
-      {/* Rejected */}
-      {/* <div className='flex flex-col gap-1.5'>
-          <span className='text-[13px] font-semibold text-[#44403C]'>
-            Rejected
-          </span>
-          <div className='flex flex-col items-start gap-3 rounded-[10px] border border-[#FECACA] bg-[#FEF2F2] px-4 py-3'>
-            <p className='m-0 text-sm leading-normal text-[#7F1D1D]'>
-              Your shop was not approved: the address and photos are missing.
-              Update your details, then submit it again.
-            </p>
-            <button
-              type='button'
-              onClick={handleResubmit}
-              className='rounded-[10px] border-0 bg-[#B45309] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#92400E]'
+      {shop.status === 'APPROVED' && (
+        <section className='rounded-2xl border border-[#d9e2d3] bg-[#edf1e8] p-5 sm:p-6'>
+          <div className='flex flex-wrap items-start justify-between gap-4'>
+            <div>
+              <p className='flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-forest'>
+                <Check aria-hidden='true' className='h-4 w-4' />
+                Your menu is live
+              </p>
+              <Link
+                href={`/${shop.slug}`}
+                className='mt-2 inline-block break-all font-bricolage text-xl font-bold tracking-[-0.03em] text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest'
+              >
+                {publicMenuUrl}
+              </Link>
+              <p className='mt-2 max-w-xl text-sm leading-6 text-[#586657]'>
+                Share your link anywhere—or print a QR code for your tables and
+                counter.
+              </p>
+            </div>
+            <Link
+              href={`/${shop.slug}`}
+              className='inline-flex items-center gap-2 rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-[#19382e]'
             >
-              Submit for review again
-            </button>
+              <Eye aria-hidden='true' className='h-4 w-4' />
+              View menu
+              <ArrowUpRight aria-hidden='true' className='h-4 w-4' />
+            </Link>
           </div>
-        </div> */}
+        </section>
+      )}
 
-      {/* Suspended */}
-      {/* <div className='flex flex-col gap-1.5'>
-          <span className='text-[13px] font-semibold text-[#44403C]'>
-            Suspended
-          </span>
-          <p className='m-0 rounded-[10px] border border-[#D6D3D1] bg-[#F5F5F4] px-4 py-3 text-sm leading-normal text-[#292524]'>
-            Your shop is suspended: reported by a customer. Please contact
-            support.
+      <section>
+        <div className='mb-4'>
+          <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-primary'>
+            Keep things fresh
           </p>
-        </div> */}
-      {/* </div> */}
-    </section>
+          <h2 className='mt-1 font-bricolage text-2xl font-bold tracking-[-0.05em] text-forest'>
+            Your next steps
+          </h2>
+        </div>
+        <div className='grid gap-3 sm:grid-cols-2'>
+          <Link
+            href='/dashboard/menu'
+            className='group rounded-2xl border border-[#e6ddd0] bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-[#c5b8a5] hover:shadow-[0_12px_30px_rgba(47,54,43,0.07)]'
+          >
+            <span className='inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f5dfd9] text-primary'>
+              <PencilLine aria-hidden='true' className='h-5 w-5' />
+            </span>
+            <div className='mt-5 flex items-center justify-between gap-3'>
+              <h3 className='font-bricolage text-xl font-bold tracking-[-0.04em] text-forest'>
+                Shape your menu
+              </h3>
+              <ArrowUpRight
+                aria-hidden='true'
+                className='h-5 w-5 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5'
+              />
+            </div>
+            <p className='mt-2 text-sm leading-6 text-[#716e63]'>
+              Arrange groups, add photos, tune prices, and keep availability up
+              to date.
+            </p>
+          </Link>
+          <Link
+            href='/dashboard/settings'
+            className='group rounded-2xl border border-[#e6ddd0] bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-[#c5b8a5] hover:shadow-[0_12px_30px_rgba(47,54,43,0.07)]'
+          >
+            <span className='inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#e5eadf] text-forest'>
+              <PencilLine aria-hidden='true' className='h-5 w-5' />
+            </span>
+            <div className='mt-5 flex items-center justify-between gap-3'>
+              <h3 className='font-bricolage text-xl font-bold tracking-[-0.04em] text-forest'>
+                Shop details
+              </h3>
+              <ArrowUpRight
+                aria-hidden='true'
+                className='h-5 w-5 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5'
+              />
+            </div>
+            <p className='mt-2 text-sm leading-6 text-[#716e63]'>
+              Keep your shop name, contact details, and address just right.
+            </p>
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

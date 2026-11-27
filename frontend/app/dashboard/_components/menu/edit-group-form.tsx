@@ -22,18 +22,18 @@ export default function EditGroupForm({ shopId, group }: Props) {
   );
   return (
     <details>
-      <summary className='inline rounded-md border border-stone-300 bg-white px-2 py-1 text-xs hover:bg-stone-100 disabled:opacity-50 cursor-pointer font-semibold'>
+      <summary className='inline-flex cursor-pointer list-none rounded-full border border-[#d9d0c3] bg-paper px-3 py-1.5 text-xs font-semibold text-forest transition-colors hover:bg-[#eee8dd] marker:hidden'>
         Edit group
       </summary>
-      <div className='p-4 border border-gray-300 rounded-2xl m-4'>
-        <form action={formAction} className=' p-4'>
+      <div className='m-2 space-y-3 rounded-2xl border border-[#e6ddd0] bg-background p-3 sm:m-3 sm:p-4'>
+        <form action={formAction} className='rounded-xl bg-paper p-3 sm:p-4'>
           <FormError state={state} />
           <input type='hidden' name='shopId' value={shopId} />
           <input type='hidden' name='groupId' value={group.id} />
           <GroupFields group={group} />
 
           <Button type='submit' disabled={isPending} size='sm'>
-            {isPending ? 'Saving Group..' : ' Save Group'}
+            {isPending ? 'Saving group…' : 'Save group'}
           </Button>
         </form>
         <form action={deleteFormAction} className='px-4'>
@@ -46,7 +46,7 @@ export default function EditGroupForm({ shopId, group }: Props) {
             disabled={isDeletePending}
             size='sm'
           >
-            {isDeletePending ? 'Deleting Group..' : ' Delete Group'}
+            {isDeletePending ? 'Deleting group…' : 'Delete group'}
           </Button>
         </form>
       </div>

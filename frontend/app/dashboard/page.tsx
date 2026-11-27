@@ -22,8 +22,8 @@ async function DashboardContent() {
 function DashboardFallback() {
   return (
     <section className='space-y-3' role='status'>
-      <p className='text-sm text-stone-500'>Loading your shop…</p>
-      <div aria-hidden='true' className='h-24 animate-pulse rounded-xl bg-stone-200' />
+      <p className='text-sm text-[#716e63]'>Getting your shop ready…</p>
+      <div aria-hidden='true' className='h-24 animate-pulse rounded-2xl bg-[#e9e2d6]' />
     </section>
   );
 }

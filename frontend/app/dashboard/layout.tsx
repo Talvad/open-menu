@@ -1,4 +1,6 @@
 import AppHeader from '@/components/app-header';
+import AppFooter from '@/components/app-footer';
+import { BrandLockup } from '@/components/brand-mark';
 import { requireOwner } from '@/lib/auth/session';
 import { Suspense } from 'react';
 
@@ -25,14 +27,15 @@ async function OwnerArea({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AppHeader links={menu}>
-        <span className='font-bricolage text-xl sm:text-2xl font-bold leading-none tracking-[-0.02em] text-foreground'>
-          Open <span className='text-primary'>Menu</span>
-        </span>
-        <span className='bg-gray-300 text-gray-600 text-xs rounded font-semibold px-1 py-px'>
+        <BrandLockup subtitle='Merchant studio' />
+        <span className='rounded-full bg-[#e5eadf] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-forest'>
           {session?.role}
         </span>
       </AppHeader>
-      <main className='mx-auto max-w-4xl px-4 py-8'>{children}</main>
+      <main className='mx-auto min-h-[65vh] max-w-7xl px-4 py-8 sm:px-8 sm:py-12 lg:px-12'>
+        {children}
+      </main>
+      <AppFooter />
     </>
   );
 }

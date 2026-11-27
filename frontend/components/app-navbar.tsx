@@ -14,11 +14,11 @@ export async function AppNavbar() {
   await connection();
   const session = await getSession();
   return (
-    <nav className='flex items-center gap-5 text-sm ml-auto'>
+    <nav className='ml-auto flex items-center gap-2 text-sm'>
       {!session && (
         <Link
-          href={'/auth/login'}
-          className='px-1 py-3 font-medium text-foreground transition-opacity hover:opacity-80'
+          href='/auth/login'
+          className='rounded-full px-4 py-2 font-semibold text-foreground transition-colors hover:bg-[#efe8dc]'
         >
           Sign in
         </Link>
@@ -34,14 +34,19 @@ function DashboardLinks({ session }: { session: Session }) {
       <DropdownTrigger>
         <div
           className={cn(
-            'inline-flex select-none items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition',
-            'hover:bg-gray-50 data-popup-open:bg-gray-100',
-            'focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-indigo-500',
+            'inline-flex select-none items-center justify-center gap-2 rounded-full border border-[#d9d0c3] bg-paper px-3.5 py-2 text-sm font-semibold text-foreground shadow-sm transition',
+            'hover:bg-white data-popup-open:bg-[#efe8dc]',
+            'focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-primary',
             'disabled:cursor-not-allowed disabled:opacity-60',
-            'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:data-popup-open:bg-gray-800',
           )}
         >
-          {session.email.charAt(0)}
+          <span
+            aria-label={`Signed in as ${session.email}`}
+            title={session.email}
+            className='inline-flex h-7 w-7 items-center justify-center rounded-full bg-forest text-xs font-bold uppercase text-paper'
+          >
+            {session.email.charAt(0)}
+          </span>
         </div>
       </DropdownTrigger>
       <DropdownMenu>
@@ -61,8 +66,8 @@ function DashboardLinks({ session }: { session: Session }) {
 
 export function AppNavbarSkeleton() {
   return (
-    <nav>
-      <button className='font-semibold'>Loading...</button>
+    <nav aria-label='Account menu' className='ml-auto'>
+      <span className='inline-block h-9 w-20 animate-pulse rounded-full bg-[#e9e2d6]' />
     </nav>
   );
 }

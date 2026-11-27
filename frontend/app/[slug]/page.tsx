@@ -37,11 +37,11 @@ async function Menu({ params }: Props) {
 
 function MenuSkeleton() {
   return (
-    <div className='animate-pulse'>
-      <div className='h-32 bg-amber-700/80' />
-      <div className='mx-auto max-w-2xl space-y-3 px-4 py-6'>
+    <div>
+      <div className='h-44 animate-pulse bg-forest' />
+      <div className='mx-auto max-w-3xl space-y-3 px-4 py-8'>
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className='h-28 rounded-xl bg-stone-200' />
+          <div key={i} className='h-28 animate-pulse rounded-2xl bg-[#e9e2d6]' />
         ))}
       </div>
     </div>

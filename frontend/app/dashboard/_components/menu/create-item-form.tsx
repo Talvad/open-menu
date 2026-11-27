@@ -19,12 +19,14 @@ export default function CreateItemForm({ shop, group, groups }: Props) {
   );
   return (
     <details className='mt-4'>
-      <summary className={`inline-flex cursor-pointer`}>
-        <div className='inline-flex items-center justify-center rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50'>
-          + Add item to {group.name}
-        </div>
+      <summary className='inline-flex cursor-pointer list-none items-center gap-2 rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-[#19382e] marker:hidden'>
+        <span aria-hidden='true'>+</span>
+        Add an item
       </summary>
-      <form action={formAction}>
+      <form
+        action={formAction}
+        className='mt-4 rounded-2xl border border-[#e6ddd0] bg-background p-4 sm:p-5'
+      >
         <FormError state={state} />
         <input type='hidden' name='shopId' value={shop.id} />
         <ItemFields
@@ -34,7 +36,7 @@ export default function CreateItemForm({ shop, group, groups }: Props) {
           defaultGroupId={group.id}
         />
         <Button type='submit' disabled={isPending} size='sm'>
-          {isPending ? 'Saving item...' : 'Save item'}
+          {isPending ? 'Saving item…' : `Save ${group.name} item`}
         </Button>
       </form>
     </details>

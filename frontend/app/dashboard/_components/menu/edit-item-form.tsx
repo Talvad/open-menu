@@ -18,9 +18,14 @@ export default function EditItemForm({ shopId, item, groups }: Props) {
     undefined,
   );
   return (
-    <details className='mt-2 pl-17'>
-      <summary className='cursor-pointer text-sm text-amber-700'>Edit</summary>
-      <form action={formAction} className=' p-4'>
+    <details className='mt-3 sm:pl-20'>
+      <summary className='cursor-pointer list-none text-xs font-semibold text-primary underline decoration-primary/30 underline-offset-4 marker:hidden hover:decoration-primary'>
+        Edit item details
+      </summary>
+      <form
+        action={formAction}
+        className='mt-3 rounded-2xl border border-[#e6ddd0] bg-background p-4 sm:p-5'
+      >
         <FormError state={state} />
         <input type='hidden' name='shopId' value={shopId} />
         <input type='hidden' name='itemId' value={item.id} />
@@ -31,7 +36,7 @@ export default function EditItemForm({ shopId, item, groups }: Props) {
           defaultGroupId={item.groupId}
         />
         <Button type='submit' disabled={isPending} size='sm'>
-          {isPending ? 'Saving Item..' : 'Save Item'}
+          {isPending ? 'Saving changes…' : 'Save item changes'}
         </Button>
       </form>
     </details>

@@ -108,13 +108,21 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
 
   return (
     <div className={count > 0 ? 'pb-28' : 'pb-10'}>
-      <header className='bg-amber-700 px-4 py-8 text-white'>
-        <div className='mx-auto max-w-2xl'>
-          <h1 className='text-3xl font-bold'>{shop.name}</h1>
+      <header className='relative overflow-hidden bg-forest px-4 py-9 text-paper sm:py-12'>
+        <div aria-hidden='true' className='absolute -right-10 -top-20 h-56 w-56 rounded-full border-[24px] border-white/[0.06]' />
+        <div className='relative mx-auto max-w-3xl'>
+          <p className='mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#efb08c]'>
+            Today at
+          </p>
+          <h1 className='font-bricolage text-4xl font-bold tracking-[-0.06em] sm:text-6xl'>
+            {shop.name}
+          </h1>
           {shop.description && (
-            <p className='mt-1 text-amber-100'>{shop.description}</p>
+            <p className='mt-3 max-w-xl text-sm leading-6 text-white/70 sm:text-base'>
+              {shop.description}
+            </p>
           )}
-          <div className='mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-amber-100'>
+          <div className='mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/65 sm:text-sm'>
             {shop.address && <span>{shop.address}</span>}
             {shop.phone && (
               <a
@@ -128,15 +136,15 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
         </div>
       </header>
 
-      <div className='sticky top-0 z-10 border-b border-stone-200 bg-white/95 backdrop-blur'>
-        <div className='mx-auto max-w-2xl px-4 py-2'>
+      <div className='sticky top-0 z-10 border-b border-[#e6ddd0] bg-background/95 backdrop-blur'>
+        <div className='mx-auto max-w-3xl px-4 py-3'>
           <input
             type='search'
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder='Search this menu'
             aria-label='Search this menu'
-            className='w-full rounded-lg border border-stone-300 px-3 py-2 text-sm outline-none focus:border-amber-600'
+            className='w-full rounded-full border border-[#d9d0c3] bg-paper px-4 py-3 text-sm outline-none placeholder:text-[#898477] focus:border-primary focus:ring-2 focus:ring-primary/15'
           />
           {groups.length > 1 && !q && (
             <nav
@@ -147,7 +155,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                 <a
                   key={g.id}
                   href={`#g-${g.id}`}
-                  className='shrink-0 rounded-full bg-stone-100 px-3 py-1 text-sm hover:bg-amber-100'
+                  className='shrink-0 rounded-full bg-[#eee8dd] px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[#e3dbcd]'
                 >
                   {g.name}
                 </a>
@@ -157,26 +165,35 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
         </div>
       </div>
 
-      <main className='mx-auto max-w-2xl space-y-8 px-4 py-6'>
+      <main className='mx-auto max-w-3xl space-y-9 px-4 py-8 sm:py-10'>
         {groups.length === 0 && (
-          <p className='text-stone-500'>
-            This menu is empty for now. Please check back soon.
+          <p className='rounded-2xl border border-dashed border-[#d9d0c3] px-5 py-12 text-center text-sm text-[#716e63]'>
+            Nothing is listed just yet. Please check back soon.
           </p>
         )}
         {groups.length > 0 && visibleGroups.length === 0 && (
-          <p className='text-stone-500'>Nothing matches “{query}”.</p>
+          <p className='rounded-2xl border border-dashed border-[#d9d0c3] px-5 py-12 text-center text-sm text-[#716e63]'>
+            Nothing matches “{query}”. Try another search.
+          </p>
         )}
 
         {visibleGroups.map((g) => (
-          <section key={g.id} id={`g-${g.id}`}>
-            <h2 className='mb-3 text-xl font-bold'>{g.name}</h2>
+          <section key={g.id} id={`g-${g.id}`} className='scroll-mt-32'>
+            <div className='mb-4 border-b border-[#ded5c7] pb-3'>
+              <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-primary'>
+                On the menu
+              </p>
+              <h2 className='mt-1 font-bricolage text-3xl font-bold tracking-[-0.05em] text-forest'>
+                {g.name}
+              </h2>
+            </div>
             <ul className='space-y-3'>
               {g.items.map((item) => {
                 const qty = cart[item.id] ?? 0;
                 return (
                   <li
                     key={item.id}
-                    className={`flex gap-3 rounded-xl border border-stone-200 bg-white p-3 ${
+                    className={`flex gap-3 rounded-2xl border border-[#e6ddd0] bg-paper p-3 shadow-[0_8px_24px_rgba(47,54,43,0.04)] sm:gap-4 sm:p-4 ${
                       item.available ? '' : 'opacity-60'
                     }`}
                   >
@@ -186,13 +203,15 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                         src={item.imageUrl}
                         alt={item.name}
                         loading='lazy'
-                        className='h-24 w-24 shrink-0 rounded-lg object-cover'
+                        className='h-24 w-24 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28'
                       />
                     )}
                     <div className='flex min-w-0 flex-1 flex-col'>
-                      <h3 className='font-semibold'>{item.name}</h3>
+                      <h3 className='font-bricolage text-lg font-bold tracking-[-0.03em] text-forest'>
+                        {item.name}
+                      </h3>
                       {item.description && (
-                        <p className='text-sm text-stone-600'>
+                        <p className='mt-1 text-sm leading-5 text-[#626258]'>
                           {item.description}
                         </p>
                       )}
@@ -202,7 +221,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                           {item.tags.map((t) => (
                             <span
                               key={t}
-                              className='rounded-full bg-amber-50 px-2 py-0.5 text-amber-800'
+                              className='rounded-full bg-[#e5eadf] px-2.5 py-1 text-forest'
                             >
                               {t}
                             </span>
@@ -210,7 +229,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                           {Object.entries(item.attributes).map(([k, v]) => (
                             <span
                               key={k}
-                              className='rounded-full bg-stone-100 px-2 py-0.5 text-stone-600'
+                              className='rounded-full bg-[#eee8dd] px-2.5 py-1 text-[#5f5c52]'
                             >
                               {k}: {v}
                             </span>
@@ -218,18 +237,18 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                         </div>
                       )}
                       <div className='mt-auto flex items-center justify-between pt-2'>
-                        <span className='font-semibold'>
+                        <span className='font-semibold tabular-nums text-forest'>
                           {money(item.price)}
                         </span>
                         {!item.available ? (
-                          <span className='rounded-full bg-stone-200 px-2.5 py-1 text-xs font-medium text-stone-600'>
+                          <span className='rounded-full bg-[#eee8dd] px-3 py-1.5 text-xs font-semibold text-[#5f5c52]'>
                             Sold out
                           </span>
                         ) : qty === 0 ? (
                           <button
                             type='button'
                             onClick={() => change(item.id, 1)}
-                            className='rounded-lg bg-amber-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-amber-700'
+                            className='rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a43d30]'
                           >
                             Add
                           </button>
@@ -239,7 +258,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                               type='button'
                               onClick={() => change(item.id, -1)}
                               aria-label={`Remove one ${item.name}`}
-                              className='h-8 w-8 rounded-lg border border-stone-300 text-lg leading-none hover:bg-stone-100'
+                              className='h-9 w-9 rounded-full border border-[#d9d0c3] bg-paper text-lg leading-none text-forest hover:bg-[#eee8dd]'
                             >
                               −
                             </button>
@@ -250,7 +269,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                               type='button'
                               onClick={() => change(item.id, 1)}
                               aria-label={`Add one more ${item.name}`}
-                              className='h-8 w-8 rounded-lg bg-amber-600 text-lg leading-none text-white hover:bg-amber-700'
+                              className='h-9 w-9 rounded-full bg-primary text-lg leading-none text-white hover:bg-[#a43d30]'
                             >
                               +
                             </button>
@@ -266,16 +285,16 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
         ))}
       </main>
 
-      <footer className='px-4 pb-6 text-center text-xs text-stone-400'>
-        Menu powered by <span className='font-medium'>Open Menu</span>
+      <footer className='border-t border-[#e6ddd0] px-4 py-5 text-center text-xs text-[#716e63]'>
+        A menu by <span className='font-semibold text-forest'>Open Menu</span>
       </footer>
 
       {count > 0 && (
-        <div className='fixed inset-x-0 bottom-0 z-20 border-t border-stone-200 bg-white p-3 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]'>
+        <div className='fixed inset-x-0 bottom-0 z-20 border-t border-[#e6ddd0] bg-background/95 p-3 shadow-[0_-8px_24px_rgba(47,54,43,0.08)] backdrop-blur'>
           <button
             type='button'
             onClick={() => setOpen(true)}
-            className='mx-auto flex w-full max-w-2xl items-center justify-between rounded-xl bg-amber-600 px-4 py-3 font-semibold text-white hover:bg-amber-700'
+            className='mx-auto flex w-full max-w-3xl items-center justify-between rounded-full bg-forest px-5 py-3.5 text-sm font-semibold text-paper transition-colors hover:bg-[#19382e]'
           >
             <span>
               {count} item{count === 1 ? '' : 's'} · View total
@@ -294,11 +313,13 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
             role='dialog'
             aria-modal='true'
             aria-label='Your selection'
-            className='max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 sm:max-w-md sm:rounded-2xl'
+            className='max-h-[85vh] w-full overflow-y-auto rounded-t-[1.75rem] border border-[#e6ddd0] bg-paper p-5 sm:max-w-md sm:rounded-[1.75rem] sm:p-6'
             onClick={(e) => e.stopPropagation()}
           >
             <div className='flex items-center justify-between'>
-              <h2 className='text-lg font-bold'>Your selection</h2>
+              <h2 className='font-bricolage text-2xl font-bold tracking-[-0.04em] text-forest'>
+                Your selection
+              </h2>
               <button
                 type='button'
                 onClick={() => setOpen(false)}
@@ -309,14 +330,14 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
             </div>
 
             {lines.length === 0 ? (
-              <p className='mt-6 text-stone-500'>Nothing selected yet.</p>
+              <p className='mt-6 text-sm text-[#716e63]'>Nothing selected yet.</p>
             ) : (
-              <ul className='mt-4 divide-y divide-stone-100'>
+              <ul className='mt-4 divide-y divide-[#eee7dc]'>
                 {lines.map(({ item, qty }) => (
                   <li key={item.id} className='flex items-center gap-3 py-2'>
                     <div className='min-w-0 flex-1'>
                       <p className='truncate font-medium'>{item.name}</p>
-                      <p className='text-xs text-stone-500'>
+                      <p className='text-xs text-[#716e63]'>
                         {money(item.price)} × {qty}
                       </p>
                     </div>
@@ -349,7 +370,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
               </ul>
             )}
 
-            <div className='mt-4 flex items-center justify-between border-t border-stone-200 pt-4 text-lg font-bold'>
+            <div className='mt-4 flex items-center justify-between border-t border-[#ded5c7] pt-4 text-lg font-bold text-forest'>
               <span>Total</span>
               <span className='tabular-nums'>{money(total)}</span>
             </div>
@@ -360,7 +381,7 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                   href={`https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(orderText)}`}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='flex-1 rounded-lg bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-700'
+                  className='flex-1 rounded-full bg-forest px-3 py-2.5 text-center text-sm font-semibold text-paper hover:bg-[#19382e]'
                 >
                   Send on WhatsApp
                 </a>
@@ -368,20 +389,20 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
               <button
                 type='button'
                 onClick={copyOrder}
-                className='flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm font-medium hover:bg-stone-100'
+                className='flex-1 rounded-full border border-[#d9d0c3] px-3 py-2.5 text-sm font-semibold text-forest hover:bg-[#eee8dd]'
               >
                 {copied ? 'Copied' : 'Copy order'}
               </button>
               <button
                 type='button'
                 onClick={() => setCart({})}
-                className='rounded-lg border border-stone-300 px-3 py-2 text-sm hover:bg-stone-100'
+                className='rounded-full border border-[#d9d0c3] px-3 py-2.5 text-sm hover:bg-[#eee8dd]'
               >
                 Clear
               </button>
             </div>
-            <p className='mt-3 text-xs text-stone-400'>
-              This is a calculator only. Prices are confirmed by the shop.
+            <p className='mt-3 text-xs leading-5 text-[#898477]'>
+              Use this as a quick estimate. The shop will confirm your final total.
             </p>
           </div>
         </div>

@@ -19,16 +19,16 @@ export default function AllGroupForm({ shop, groups = [], items = [] }: Props) {
         return (
           <div
             key={group.id}
-            className='rounded-xl border border-stone-200 bg-white p-4 shadow-sm'
+            className='rounded-2xl border border-[#e6ddd0] bg-paper p-4 shadow-[0_8px_24px_rgba(47,54,43,0.04)] sm:p-5'
           >
             <div className='flex flex-wrap items-center gap-2'>
               <h3 className='text-lg font-bold'>{group.name}</h3>
               {!group.visible && (
-                <span className='rounded-full bg-stone-200 px-2 py-0.5 text-xs'>
+                <span className='rounded-full bg-[#eee8dd] px-2.5 py-1 text-[10px] font-semibold text-[#5f5c52]'>
                   Hidden
                 </span>
               )}
-              <span className='text-xs text-stone-500'>
+              <span className='text-xs text-[#716e63]'>
                 {groupItems.length} item{groupItems.length === 1 ? '' : 's'}
               </span>
             </div>

@@ -90,17 +90,17 @@ export default function ItemFields({
         </Field>
       </div>
       <Field>
-        <FieldLabel htmlFor='tags'>Tags (comma separated)</FieldLabel>
+        <FieldLabel htmlFor='tags'>Tags, separated by commas</FieldLabel>
         <Input
           id='tags'
           name='tags'
           defaultValue={item?.tags.join(', ')}
-          placeholder='veg, spicy, popular'
+          placeholder='Vegetarian, house favourite'
         />
       </Field>
       <Field>
         <FieldLabel htmlFor='attributes'>
-          Extra details (one per line, “Name: value”)
+          Extra details, one per line
         </FieldLabel>
         <Textarea
           id='attributes'

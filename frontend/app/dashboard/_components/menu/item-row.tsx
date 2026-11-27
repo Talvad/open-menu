@@ -17,11 +17,11 @@ export default function ItemRow({
   price: string;
 }) {
   return (
-    <li className='py-3'>
+    <li className='py-4 first:pt-0'>
       <div className='flex items-start gap-3'>
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <div className='relative h-14 w-14 shrink-0 rounded-lg'>
+          <div className='relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[#e6ddd0]'>
             <Image
               src={item.imageUrl}
               fill
@@ -30,32 +30,34 @@ export default function ItemRow({
             />
           </div>
         ) : (
-          <div className='h-14 w-14 shrink-0 rounded-lg bg-stone-100' />
+          <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-[#eee8dd] text-xs font-semibold text-[#898477]'>
+            No photo
+          </div>
         )}
         <div className='min-w-0 flex-1'>
           <div className='flex flex-wrap items-center gap-2'>
-            <span className='font-medium'>{item.name}</span>
-            <span className='text-sm text-stone-600'>{price}</span>
+            <span className='font-semibold text-forest'>{item.name}</span>
+            <span className='text-sm font-medium tabular-nums text-[#716e63]'>{price}</span>
             {!item.available && (
-              <span className='rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700'>
+              <span className='rounded-full bg-[#f5dfd9] px-2.5 py-1 text-[10px] font-semibold text-[#943f32]'>
                 Sold out
               </span>
             )}
             {!item.visible && (
-              <span className='rounded-full bg-stone-200 px-2 py-0.5 text-xs'>
+              <span className='rounded-full bg-[#eee8dd] px-2.5 py-1 text-[10px] font-semibold text-[#5f5c52]'>
                 Hidden
               </span>
             )}
           </div>
           {item.description && (
-            <p className='truncate text-sm text-stone-500'>
+            <p className='mt-1 truncate text-sm text-[#716e63]'>
               {item.description}
             </p>
           )}
         </div>
       </div>
 
-      <div className='-mt-2 flex flex-wrap items-start gap-2 pl-17'>
+      <div className='mt-3 flex flex-wrap items-start gap-2 pl-0 sm:pl-20'>
         <ToggleItemForm
           shopId={shopId}
           itemId={item.id}

@@ -91,36 +91,36 @@ export function ImageUpload({
   return (
     <div className='space-y-2'>
       <input type='hidden' name='imageKey' value={key} readOnly />
-      <p className='text-xs font-semibold uppercase tracking-wide text-stone-500'>
-        Photo
+      <p className='text-xs font-semibold uppercase tracking-[0.12em] text-[#615e53]'>
+        Menu photo
       </p>
-      <div className='flex flex-wrap items-center gap-3 rounded-xl border border-stone-200 bg-white p-3 shadow-sm'>
+      <div className='flex flex-wrap items-center gap-3 rounded-2xl border border-[#e6ddd0] bg-paper p-3 shadow-sm'>
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={preview}
             alt='Selected menu item'
-            className='h-16 w-16 shrink-0 rounded-lg border border-stone-200 object-cover'
+            className='h-16 w-16 shrink-0 rounded-xl border border-[#e6ddd0] object-cover'
           />
         ) : (
-          <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-dashed border-stone-300 bg-stone-50 text-stone-400'>
+          <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-dashed border-[#d9d0c3] bg-[#f7f2e9] text-[#898477]'>
             <ImagePlus aria-hidden='true' className='h-6 w-6' />
           </div>
         )}
         <div className='min-w-28 flex-1'>
-          <p className='text-sm font-medium text-stone-800'>
-            {preview ? 'Photo selected' : 'Add a menu photo'}
+          <p className='text-sm font-semibold text-forest'>
+            {preview ? 'Looking good' : 'Give it a little visual love'}
           </p>
           <p
-            className='mt-0.5 text-xs text-stone-500'
+            className='mt-0.5 text-xs text-[#716e63]'
             aria-live='polite'
             aria-atomic='true'
           >
-            {busy ? 'Uploading…' : 'Choose an image from your device'}
+            {busy ? 'Uploading your photo…' : 'Choose an image from your device'}
           </p>
         </div>
         <label
-          className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 transition-colors hover:bg-stone-100 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
+          className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[#d9d0c3] bg-paper px-3.5 py-2 text-xs font-semibold text-forest transition-colors hover:bg-[#eee8dd] focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
             busy ? 'cursor-wait opacity-60' : ''
           }`}
           aria-disabled={busy}
@@ -146,7 +146,7 @@ export function ImageUpload({
           <button
             type='button'
             aria-label='Remove item photo'
-            className='inline-flex h-9 w-9 items-center justify-center rounded-lg border border-stone-300 bg-white text-stone-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+            className='inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9d0c3] bg-paper text-[#716e63] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
             onClick={() => {
               setKey('');
               setPreview(null);

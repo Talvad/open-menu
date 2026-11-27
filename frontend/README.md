@@ -16,6 +16,19 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## SEO and Web Vitals
+
+Set `APP_URL` to the canonical public origin in production. When it is not set,
+the app uses the production Vercel domain configured for this project. The
+generated sitemap includes the landing page and interactive demo. Public shop
+menus have their own canonical URLs and structured data.
+
+The app reports Core Web Vitals in development and emits an
+`open-menu:web-vitals` browser event. To forward measurements in production,
+set `NEXT_PUBLIC_WEB_VITALS_ENDPOINT` to an analytics endpoint that accepts
+JSON `POST` requests. Reports include metric name, value, delta, rating,
+navigation type, and pathname only.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Bricolage_Grotesque } from 'next/font/google';
+import { WebVitals } from '@/components/web-vitals';
+import { siteUrl } from '@/lib/seo';
 
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -8,9 +10,50 @@ const bricolage = Bricolage_Grotesque({
   variable: '--font-bricolage',
 });
 export const metadata: Metadata = {
-  title: { default: 'Open Menu', template: '%s · Open Menu' },
+  metadataBase: siteUrl,
+  title: {
+    default: 'Open Menu — menus made to be shared',
+    template: '%s · Open Menu',
+  },
   description:
-    'Digital menus and catalogues for restaurants, stores, hotels and grocery shops.',
+    'Create a polished digital menu or catalogue for your restaurant, cafe, hotel, grocery shop, or store. Keep it current and easy to share.',
+  applicationName: 'Open Menu',
+  keywords: [
+    'digital menu',
+    'online menu',
+    'restaurant menu',
+    'cafe menu',
+    'shop catalogue',
+    'QR code menu',
+  ],
+  authors: [{ name: 'Open Menu' }],
+  creator: 'Open Menu',
+  publisher: 'Open Menu',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'Open Menu',
+    locale: 'en_IN',
+    title: 'Open Menu — menus made to be shared',
+    description:
+      'Create a polished digital menu or catalogue for your restaurant, cafe, hotel, grocery shop, or store.',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Open Menu — menus made to be shared',
+    description:
+      'Create a polished digital menu or catalogue for your restaurant, cafe, hotel, grocery shop, or store.',
+  },
 };
 
 export const viewport: Viewport = {
@@ -29,7 +72,8 @@ export default function RootLayout({
       <body
         className={`${bricolage.variable} bg-background text-foreground min-h-screen antialiased`}
       >
-        <main className='isolate'>{children}</main>
+        <WebVitals />
+        <div className='isolate min-h-screen'>{children}</div>
       </body>
     </html>
   );

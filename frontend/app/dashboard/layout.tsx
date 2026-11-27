@@ -3,12 +3,17 @@ import AppFooter from '@/components/app-footer';
 import { BrandLockup } from '@/components/brand-mark';
 import { requireOwner } from '@/lib/auth/session';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 
 const menu = [
   { href: '/dashboard', label: 'Overview' },
   { href: '/dashboard/menu', label: 'Menu' },
   { href: '/dashboard/settings', label: 'Settings' },
 ];
+export const metadata: Metadata = {
+  title: 'Merchant dashboard',
+  robots: { index: false, follow: false },
+};
 export const instant = false;
 export default function RootLayout({
   children,

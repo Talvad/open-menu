@@ -24,7 +24,6 @@ export default function AppHeader({
       <div className='mx-auto flex max-w-7xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 sm:px-8 lg:px-12'>
         <Link
           href={homeLink}
-          aria-label='Open Menu home'
           className='shrink-0 rounded-lg'
         >
           {children ?? <BrandLockup />}
@@ -33,6 +32,7 @@ export default function AppHeader({
         {isMarketingHeader && (
           <Link
             href='/auth/login?mode=signup&next=/dashboard'
+            prefetch={false}
             className='ml-auto hidden rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-[#19382e] sm:inline-flex'
           >
             Build your menu

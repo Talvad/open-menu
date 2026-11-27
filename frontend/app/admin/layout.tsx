@@ -3,11 +3,16 @@ import AppFooter from '@/components/app-footer';
 import { BrandLockup } from '@/components/brand-mark';
 import { requireAdmin } from '@/lib/auth/session';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 
 const menu = [
   { href: '/admin?status=PENDING', label: 'Review queue' },
   { href: '/admin?status=ALL', label: 'All shops' },
 ];
+export const metadata: Metadata = {
+  title: 'Admin dashboard',
+  robots: { index: false, follow: false },
+};
 export const instant = false;
 export default function RootLayout({
   children,

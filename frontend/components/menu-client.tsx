@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoney } from '@/lib/format';
 import { PublicItem, PublicMenu } from '@/lib/types';
@@ -27,22 +28,32 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
 
   // Restore the cart, dropping items that were removed or went out of stock since.
   useEffect(() => {
+    let cancelled = false;
+    const clean: Record<string, number> = {};
+
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
         const saved = JSON.parse(raw) as Record<string, number>;
-        const clean: Record<string, number> = {};
         for (const [id, qty] of Object.entries(saved)) {
           const item = lookup.get(id);
           if (item?.available && Number.isInteger(qty) && qty > 0)
             clean[id] = Math.min(qty, 99);
         }
-        setCart(clean);
       }
     } catch {
       /* storage unavailable: start with an empty cart */
     }
-    setLoaded(true);
+
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setCart(clean);
+      setLoaded(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [storageKey, lookup]);
 
   useEffect(() => {
@@ -198,11 +209,12 @@ export function MenuClient({ menu }: { menu: PublicMenu }) {
                     }`}
                   >
                     {item.imageUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.name}
-                        loading='lazy'
+                        width={112}
+                        height={112}
+                        sizes='(max-width: 640px) 96px, 112px'
                         className='h-24 w-24 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28'
                       />
                     )}

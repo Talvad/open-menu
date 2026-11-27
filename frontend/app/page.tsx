@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -12,6 +13,26 @@ import {
 import AppHeader from '@/components/app-header';
 import AppFooter from '@/components/app-footer';
 import { BrandLockup } from '@/components/brand-mark';
+import { JsonLd } from '@/components/json-ld';
+import { absoluteUrl } from '@/lib/seo';
+
+const description =
+  'Make a beautiful digital menu or catalogue for your restaurant, cafe, hotel, grocery shop, or store. Keep it current and simple to share.';
+
+export const metadata: Metadata = {
+  title: 'Digital Menus for Restaurants & Shops',
+  description,
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Digital Menus for Restaurants & Shops · Open Menu',
+    description,
+    url: '/',
+  },
+  twitter: {
+    title: 'Digital Menus for Restaurants & Shops · Open Menu',
+    description,
+  },
+};
 
 const benefits = [
   {
@@ -36,12 +57,29 @@ const benefits = [
 
 export default function HomePage() {
   return (
-    <div className='min-h-screen overflow-hidden'>
-      <AppHeader>
-        <BrandLockup />
-      </AppHeader>
+    <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'Open Menu',
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          description,
+          url: absoluteUrl('/').toString(),
+          publisher: {
+            '@type': 'Organization',
+            name: 'Open Menu',
+            url: absoluteUrl('/').toString(),
+          },
+        }}
+      />
+      <div className='min-h-screen overflow-hidden'>
+        <AppHeader>
+          <BrandLockup />
+        </AppHeader>
 
-      <main>
+        <main>
         <section className='relative isolate mx-auto grid max-w-7xl items-center gap-14 px-5 pb-20 pt-14 sm:px-8 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:pb-28 lg:pt-24'>
           <div aria-hidden='true' className='pointer-events-none absolute -left-44 top-8 -z-10 h-96 w-96 rounded-full bg-[#e9dfcc]/70 blur-3xl' />
           <div className='max-w-2xl'>
@@ -78,6 +116,7 @@ export default function HomePage() {
             <div className='mt-9 flex flex-wrap items-center gap-3'>
               <Link
                 href='/auth/login?mode=signup&next=/dashboard'
+                prefetch={false}
                 className='inline-flex items-center gap-3 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(174,65,48,0.2)] transition-all hover:-translate-y-0.5 hover:bg-[#a43d30]'
               >
                 Make your menu
@@ -91,16 +130,17 @@ export default function HomePage() {
                 <ArrowDownRight aria-hidden='true' className='h-4 w-4' />
               </Link>
             </div>
-            <p className='mt-4 text-xs text-[#716e63]'>
+            <p className='mt-4 text-xs text-[#625f55]'>
               Already use Google?{' '}
               <Link
                 href='/auth/login?provider=google&next=/dashboard'
+                prefetch={false}
                 className='font-semibold text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest'
               >
                 Sign up with Google
               </Link>
             </p>
-            <p className='mt-6 flex items-center gap-2 text-xs font-medium text-[#716e63]'>
+            <p className='mt-6 flex items-center gap-2 text-xs font-medium text-[#625f55]'>
               <Check aria-hidden='true' className='h-4 w-4 text-forest' />
               Free to set up · Reviewed before your menu goes live
             </p>
@@ -130,12 +170,12 @@ export default function HomePage() {
                       <br />
                       ritual.
                     </h2>
-                    <p className='mt-3 text-xs leading-5 text-white/65 sm:text-sm'>
+                    <p className='mt-3 text-xs leading-5 text-white/75 sm:text-sm'>
                       Good coffee. Warm bread. No guesswork.
                     </p>
                   </div>
                   <div className='rounded-2xl bg-[#315849] p-3 sm:p-4'>
-                    <div className='flex items-center justify-between text-[10px] text-white/65 sm:text-xs'>
+                    <div className='flex items-center justify-between text-[10px] text-white/75 sm:text-xs'>
                       <span>OPEN TODAY</span>
                       <span>8 am – 4 pm</span>
                     </div>
@@ -163,7 +203,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className='rounded-[1.5rem] bg-paper p-4 shadow-sm sm:p-5'>
-                    <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-[#858174]'>
+                    <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-[#68665b]'>
                       From the counter
                     </p>
                     <div className='mt-3 divide-y divide-[#eee7dc]'>
@@ -197,12 +237,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <p className='px-2 pb-1 pt-4 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-[#747064]'>
+              <p className='px-2 pb-1 pt-4 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-[#676457]'>
                 A little more appetite in every menu
               </p>
             </div>
             <div className='absolute -left-3 top-1/2 hidden -translate-y-1/2 -rotate-6 rounded-2xl border border-[#e6ddd0] bg-paper px-4 py-3 shadow-[0_12px_30px_rgba(48,55,43,0.12)] sm:block lg:-left-10'>
-              <p className='text-[10px] font-semibold uppercase tracking-[0.15em] text-[#858174]'>
+              <p className='text-[10px] font-semibold uppercase tracking-[0.15em] text-[#68665b]'>
                 Good to know
               </p>
               <p className='mt-1 font-bricolage text-sm font-bold text-forest'>
@@ -225,7 +265,7 @@ export default function HomePage() {
                   None of the fuss.
                 </h2>
               </div>
-              <p className='max-w-sm text-sm leading-6 text-[#716e63]'>
+              <p className='max-w-sm text-sm leading-6 text-[#625f55]'>
                 Your business has its own rhythm. Your menu should be easy to
                 shape around it.
               </p>
@@ -240,14 +280,14 @@ export default function HomePage() {
                     <span className='inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e5eadf] text-forest'>
                       <Icon aria-hidden='true' className='h-5 w-5' />
                     </span>
-                    <span className='font-bricolage text-sm font-bold text-[#aaa293]'>
+                    <span className='font-bricolage text-sm font-bold text-[#706b60]'>
                       {number}
                     </span>
                   </div>
                   <h3 className='mt-9 max-w-xs font-bricolage text-2xl font-bold leading-tight tracking-[-0.04em] text-forest'>
                     {title}
                   </h3>
-                  <p className='mt-3 text-sm leading-6 text-[#716e63]'>
+                  <p className='mt-3 text-sm leading-6 text-[#625f55]'>
                     {body}
                   </p>
                 </article>
@@ -281,7 +321,7 @@ export default function HomePage() {
                   <h3 className='font-bricolage text-xl font-bold tracking-[-0.03em] text-forest'>
                     {title}
                   </h3>
-                  <p className='mt-1.5 max-w-lg text-sm leading-6 text-[#716e63]'>
+                  <p className='mt-1.5 max-w-lg text-sm leading-6 text-[#625f55]'>
                     {body}
                   </p>
                 </div>
@@ -312,6 +352,7 @@ export default function HomePage() {
               <div className='flex flex-col items-start gap-3 sm:items-end'>
                 <Link
                   href='/auth/login?mode=signup&next=/dashboard'
+                prefetch={false}
                   className='inline-flex items-center gap-3 rounded-full bg-[#f0c49f] px-6 py-3.5 text-sm font-bold text-forest transition-colors hover:bg-paper'
                 >
                   Create your shop
@@ -327,9 +368,10 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      </main>
+        </main>
 
-      <AppFooter />
-    </div>
+        <AppFooter />
+      </div>
+    </>
   );
 }

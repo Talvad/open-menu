@@ -17,7 +17,7 @@ export async function AppNavbar() {
     <nav className='ml-auto flex items-center gap-2 text-sm'>
       {!session && (
         <Link
-          href='/auth/login'
+          href='/auth/login' prefetch={false}
           className='rounded-full px-4 py-2 font-semibold text-foreground transition-colors hover:bg-[#efe8dc]'
         >
           Sign in
